@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1024305965166",
+    "firebase_url": "https://mediaiocloud-default-rtdb.firebaseio.com",
+    "project_id": "mediaiocloud",
+    "storage_bucket": "mediaiocloud.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1024305965166:android:16fe3436b72b1be7a8de7f",
+        "android_client_info": {
+          "package_name": "com.gprod.mediaio"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1024305965166-ktl08i28c079su2an7m7tlv3g32hd2hd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB33J7xLuZdJ8FkNFMcckepD8UUYkrpARI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1024305965166-ktl08i28c079su2an7m7tlv3g32hd2hd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

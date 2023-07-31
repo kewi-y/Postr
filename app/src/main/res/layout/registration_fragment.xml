@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.fragments.registration.RegistrationFragment">
+
+    <TextView
+        android:id="@+id/textInfoView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/title_info"
+        android:textSize="18dp"
+        android:layout_marginTop="80dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/editTextEmailAddressRegistration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="14"
+        android:background="@drawable/edit_text_background"
+        android:layout_marginTop="25dp"
+        android:hint="@string/hint_title_email"
+        android:inputType="textEmailAddress"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textInfoView" />
+
+    <EditText
+        android:id="@+id/editTextNameRegistration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/edit_text_background"
+        android:layout_marginTop="25dp"
+        android:ems="14"
+        android:hint="@string/hint_title_username"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextEmailAddressRegistration" />
+
+    <EditText
+        android:id="@+id/editTextTagRegistration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:background="@drawable/edit_text_background"
+        android:ems="14"
+        android:hint="@string/hint_title_profilename"
+        android:inputType="text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextNameRegistration" />
+
+    <EditText
+        android:id="@+id/editTextPasswordRegistration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="14"
+        android:inputType="textPassword"
+        android:layout_marginTop="25dp"
+        android:hint="@string/hint_title_password"
+        android:background="@drawable/edit_text_background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextTagRegistration" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/buttonRegistration"
+        android:layout_width="240dp"
+        android:layout_height="60dp"
+        android:text="@string/button_title_registration"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:textSize="15dp"
+        app:backgroundTint="?attr/colorSecondaryVariant"
+        app:cornerRadius="30dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextPasswordRegistration" />
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginTop="10dp"
+    android:background="@android:color/transparent"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/hashtagIcon"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_hashtag" />
+
+    <TextView
+        android:id="@+id/searchResultTagItemNameView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/title_hashtag_name"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="15dp"
+        android:textSize="15dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/hashtagIcon"
+        app:layout_constraintTop_toTopOf="@+id/hashtagIcon"/>
+
+    <TextView
+        android:id="@+id/searchResultTagItemCountTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:textSize="10dp"
+        android:textColor="@color/light_gray"
+        android:text="@string/title_hashtag_view_count"
+        app:layout_constraintStart_toStartOf="@+id/searchResultTagItemNameView"
+        app:layout_constraintTop_toBottomOf="@+id/searchResultTagItemNameView" />
+
+    <TextView
+        android:id="@+id/searchResultTagItemCountView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/title_default_tag_view_count"
+        android:textSize="10dp"
+        android:textColor="@color/light_gray"
+        android:layout_marginStart="5dp"
+        app:layout_constraintBottom_toBottomOf="@id/searchResultTagItemCountTitle"
+        app:layout_constraintStart_toEndOf="@+id/searchResultTagItemCountTitle"
+        app:layout_constraintTop_toTopOf="@id/searchResultTagItemCountTitle" />
+</androidx.constraintlayout.widget.ConstraintLayout>

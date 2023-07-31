@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/image_processing_brightness"
+        android:icon="@drawable/ic_brightness"
+        android:title="@string/title_image_brightness" />
+    <item
+        android:id="@+id/image_processing_contrast"
+        android:icon="@drawable/ic_contrast"
+        android:title="@string/title_image_contrast" />
+    <item
+        android:id="@+id/image_processing_saturation"
+        android:icon="@drawable/ic_saturation"
+        android:title="@string/title_image_saturation" />
+    <item
+        android:id="@+id/image_processing_hue"
+        android:icon="@drawable/ic_hue"
+        android:title="@string/title_image_hue" />
+</menu>

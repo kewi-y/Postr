@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Users/mckew/AndroidStudioProjects/mediaIO/app/src/main/res/drawable/auth_button_background.xml" value="0.2890625" />
+        <entry key="..\:/Users/mckew/AndroidStudioProjects/mediaIO/app/src/main/res/drawable/bottom_navigation_tint_selectior.xml" value="0.1" />
+        <entry key="..\:/Users/mckew/AndroidStudioProjects/mediaIO/app/src/main/res/drawable/bottom_navigation_tint_selector.xml" value="0.1" />
+        <entry key="..\:/Users/mckew/AndroidStudioProjects/mediaIO/app/src/main/res/drawable/camera_icon.xml" value="0.2890625" />
+        <entry key="..\:/Users/mckew/AndroidStudioProjects/mediaIO/app/src/main/res/drawable/edit_profile_button_background.xml" value="0.2890625" />
+        <entry key="..\:/Users/mckew/AndroidStudioProjects/mediaIO/app/src/main/res/drawable/edit_text_backgound.xml" value="0.2890625" />
+        <entry key="..\:/Users/mckew/AndroidStudioProjects/mediaIO/app/src/main/res/drawable/ic_home3.xml" value="0.2890625" />
+        <entry key="..\:/Users/mckew/AndroidStudioProjects/mediaIO/app/src/main/res/drawable/ic_messagetext1.xml" value="0.15885416666666666" />
+        <entry key="..\:/Users/mckew/AndroidStudioProjects/mediaIO/app/src/main/res/drawable/navigation_add_dialog_background.xml" value="0.2890625" />
+        <entry key="..\:/Users/mckew/AndroidStudioProjects/mediaIO/app/src/main/res/drawable/notification_background.xml" value="0.2890625" />
+        <entry key="..\:/Users/mckew/AndroidStudioProjects/mediaIO/app/src/main/res/drawable/notification_error_background.xml" value="0.2890625" />
+        <entry key="..\:/Users/mckew/AndroidStudioProjects/mediaIO/app/src/main/res/drawable/notification_info_background.xml" value="0.2890625" />
+        <entry key="..\:/Users/mckew/AndroidStudioProjects/mediaIO/app/src/main/res/drawable/user_profile_statistic_background.xml" value="0.2890625" />
+        <entry key="..\:/Users/mckew/AndroidStudioProjects/mediaIO/app/src/main/res/layout/activity_main.xml" value="0.2" />
+        <entry key="..\:/Users/mckew/AndroidStudioProjects/mediaIO/app/src/main/res/layout/add_image_post_fragment.xml" value="0.27291666666666664" />
+        <entry key="..\:/Users/mckew/AndroidStudioProjects/mediaIO/app/src/main/res/layout/auth_fragment.xml" value="0.2" />
+        <entry key="..\:/Users/mckew/AndroidStudioProjects/mediaIO/app/src/main/res/layout/choose_image_source_dialog.xml" value="0.27291666666666664" />
+        <entry key="..\:/Users/mckew/AndroidStudioProjects/mediaIO/app/src/main/res/layout/favorites_fragment.xml" value="0.27291666666666664" />
+        <entry key="..\:/Users/mckew/AndroidStudioProjects/mediaIO/app/src/main/res/layout/fragment_home.xml" value="0.14270833333333333" />
+        <entry key="..\:/Users/mckew/AndroidStudioProjects/mediaIO/app/src/main/res/layout/fragment_notifications.xml" value="0.14270833333333333" />
+        <entry key="..\:/Users/mckew/AndroidStudioProjects/mediaIO/app/src/main/res/layout/fragment_search.xml" value="0.14270833333333333" />
+        <entry key="..\:/Users/mckew/AndroidStudioProjects/mediaIO/app/src/main/res/layout/home_fragment.xml" value="0.27291666666666664" />
+        <entry key="..\:/Users/mckew/AndroidStudioProjects/mediaIO/app/src/main/res/layout/image_camera_fragment.xml" value="0.27291666666666664" />
+        <entry key="..\:/Users/mckew/AndroidStudioProjects/mediaIO/app/src/main/res/layout/main_activity.xml" value="0.16" />
+        <entry key="..\:/Users/mckew/AndroidStudioProjects/mediaIO/app/src/main/res/layout/main_fragment.xml" value="0.27291666666666664" />
+        <entry key="..\:/Users/mckew/AndroidStudioProjects/mediaIO/app/src/main/res/layout/main_fragment2.xml" value="0.27291666666666664" />
+        <entry key="..\:/Users/mckew/AndroidStudioProjects/mediaIO/app/src/main/res/layout/navigation_add_dialog.xml" value="0.25" />
+        <entry key="..\:/Users/mckew/AndroidStudioProjects/mediaIO/app/src/main/res/layout/navigation_add_dialog_item.xml" value="0.27291666666666664" />
+        <entry key="..\:/Users/mckew/AndroidStudioProjects/mediaIO/app/src/main/res/layout/notifications_fragment.xml" value="0.27291666666666664" />
+        <entry key="..\:/Users/mckew/AndroidStudioProjects/mediaIO/app/src/main/res/layout/profile_fragment.xml" value="0.25" />
+        <entry key="..\:/Users/mckew/AndroidStudioProjects/mediaIO/app/src/main/res/layout/registration_fragment.xml" value="0.2" />
+        <entry key="..\:/Users/mckew/AndroidStudioProjects/mediaIO/app/src/main/res/layout/search_fragment.xml" value="0.27291666666666664" />
+        <entry key="..\:/Users/mckew/AndroidStudioProjects/mediaIO/app/src/main/res/menu/bottom_nav_menu.xml" value="0.1" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>

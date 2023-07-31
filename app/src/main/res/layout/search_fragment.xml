@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.fragments.search.SearchFragment">
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/searchResultTabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginTop="10dp"
+        android:visibility="invisible"
+        android:background="@drawable/search_result_tab_background"
+        app:layout_constraintTop_toBottomOf="@+id/searchBarEditText"
+        app:tabGravity="center"
+        app:tabMode="fixed"
+        app:tabIndicatorGravity="stretch"
+        app:tabIndicatorColor="?attr/colorSecondary"
+        app:tabIndicatorAnimationMode="elastic"
+        app:tabIndicator="@drawable/tab_indicator"
+        app:tabTextColor="?attr/colorOnPrimary"
+        />
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/searchResultFragmentPager"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:visibility="invisible"
+        android:background="@drawable/search_result_view_pager_background"
+        app:layout_constraintTop_toBottomOf="@id/searchResultTabLayout"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/searchResultList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginTop="20dp"
+        tools:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/searchBarEditText" />
+
+    <EditText
+        android:id="@+id/searchBarEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginTop="10dp"
+        android:layout_weight="1"
+        android:background="@drawable/edit_text_background"
+        android:ems="14"
+        android:hint="@string/title_search_bar"
+        android:inputType="text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/searchButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:src="@drawable/ic_search_button"
+        android:layout_marginEnd="20dp"
+        app:layout_constraintBottom_toBottomOf="@+id/searchBarEditText"
+        app:layout_constraintEnd_toEndOf="@+id/searchBarEditText"
+        app:layout_constraintTop_toTopOf="@+id/searchBarEditText"
+        app:layout_constraintVertical_bias="0.533" />
+</androidx.constraintlayout.widget.ConstraintLayout>

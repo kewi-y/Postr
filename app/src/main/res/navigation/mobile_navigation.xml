@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@id/authFragment">
+
+    <navigation android:id="@+id/navigation_main"
+        app:startDestination="@id/navigation_home">
+        <fragment
+            android:id="@+id/navigation_home"
+            android:name="com.gprod.mediaio.ui.fragments.home.HomeFragment"
+            android:label="@string/title_home"
+            tools:layout="@layout/home_fragment" />
+        <fragment
+            android:id="@+id/navigation_search"
+            android:name="com.gprod.mediaio.ui.fragments.search.SearchFragment"
+            android:label="@string/title_search"
+            tools:layout="@layout/search_fragment" />
+        <fragment
+            android:id="@+id/navigation_favorites"
+            android:name="com.gprod.mediaio.ui.fragments.favorites.FavoritesFragment"
+            android:label="@string/title_favorite"
+            tools:layout="@layout/favorites_fragment"></fragment>
+        <fragment
+            android:id="@+id/navigation_profile"
+            android:name="com.gprod.mediaio.ui.fragments.profile.ProfileFragment"
+            android:label="@string/title_profile"
+            tools:layout="@layout/profile_fragment">
+        </fragment>
+        <fragment
+            android:id="@+id/add_image_post_fragment"
+            android:name="com.gprod.mediaio.ui.fragments.add.post.image.AddImagePostFragment"
+            android:label="add_post_fragment"
+            tools:layout="@layout/add_image_post_fragment" >
+            <action
+                android:id="@+id/action_add_image_post_fragment_to_image_camera_fragment"
+                app:destination="@id/image_camera_fragment"
+                app:popUpTo="@id/add_image_post_fragment"/>
+        </fragment>
+        <fragment
+            android:id="@+id/edit_profile_fragment"
+            android:name="com.gprod.mediaio.ui.fragments.profile.editProfile.EditProfileFragment"
+            android:label="edit_profile_fragment"
+            tools:layout="@layout/edit_profile_fragment"/>
+        <fragment
+            android:id="@+id/image_camera_fragment"
+            android:name="com.gprod.mediaio.ui.fragments.camera.image.ImageCameraFragment"
+            android:label="image_camera_fragment"
+            tools:layout="@layout/image_camera_fragment" />
+        <fragment
+            android:id="@+id/detailedPostFragment"
+            android:name="com.gprod.mediaio.ui.fragments.detailedImagePost.DetailedImagePostFragment"
+            android:label="fragment_detailed_post"
+            tools:layout="@layout/detailed_image_post_fragment" />
+        <action
+            android:id="@+id/action_global_authFragment"
+            app:popUpTo="@id/mobile_navigation"
+            app:popUpToInclusive="true"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:destination="@id/authFragment" />
+        <fragment
+            android:id="@+id/detailedTagFragment"
+            android:name="com.gprod.mediaio.ui.fragments.detailedTag.DetailedTagFragment"
+            android:label="fragment_detailed_tag"
+            tools:layout="@layout/detailed_tag_fragment_" />
+        <fragment
+            android:id="@+id/albumFragment"
+            android:name="com.gprod.mediaio.ui.fragments.favorites.album.AlbumFragment"
+            android:label="fragment_album"
+            tools:layout="@layout/album_fragment" />
+        <fragment
+            android:id="@+id/addAlbumFragment"
+            android:name="com.gprod.mediaio.ui.fragments.add.album.AddAlbumFragment"
+            android:label="add_album_fragment"
+            tools:layout="@layout/add_album_fragment" />
+        <fragment
+            android:id="@+id/imageProcessingFragment"
+            android:name="com.gprod.mediaio.ui.fragments.imageProcessing.ImageProcessingFragment"
+            android:label="image_processing_processing"
+            tools:layout="@layout/image_processing_fragment" />
+    </navigation>
+    <fragment
+        android:id="@+id/authFragment"
+        android:name="com.gprod.mediaio.ui.fragments.auth.AuthFragment"
+        android:label="auth_fragment"
+        tools:layout="@layout/auth_fragment" >
+        <action
+            android:id="@+id/action_authFragment_to_registrationFragment"
+            app:destination="@id/registrationFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right" />
+        <action
+            android:id="@+id/action_authFragment_to_navigation_main"
+            app:destination="@id/navigation_main"
+            app:popUpTo="@id/mobile_navigation"
+            app:popUpToInclusive="true"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/registrationFragment"
+        android:name="com.gprod.mediaio.ui.fragments.registration.RegistrationFragment"
+        android:label="registration_fragment"
+        tools:layout="@layout/registration_fragment" >
+        <action
+            android:id="@+id/action_registrationFragment_to_navigation_main"
+            app:destination="@id/navigation_main"
+            app:popUpTo="@id/mobile_navigation"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"/>
+    </fragment>
+</navigation>

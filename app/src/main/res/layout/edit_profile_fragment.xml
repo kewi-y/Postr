@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    tools:context=".ui.fragments.profile.editProfile.EditProfileFragment">
+
+    <ImageButton
+        android:id="@+id/logOutButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_logout"
+        android:layout_margin="20dp"
+        android:background="@android:color/transparent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/editProfilePhotoView"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            fresco:roundAsCircle="true"
+            android:layout_gravity="center"/>
+
+        <TextView
+            android:id="@+id/editProfilePhotoTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="15dp"
+            android:textColor="?attr/colorSecondary"
+            android:textSize="15dp"
+            android:text="@string/title_edit_profile_photo" />
+
+        <EditText
+            android:id="@+id/editProfileNameView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="?attr/colorOnPrimary"
+            android:layout_weight="1"
+            android:layout_marginTop="25dp"
+            android:ems="14"
+            android:layout_gravity="center"
+            android:hint="@string/hint_title_username"
+            android:background="@drawable/edit_text_background"
+            android:inputType="textPersonName"/>
+
+        <EditText
+            android:id="@+id/editProfileTagView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/edit_text_background"
+            android:ems="14"
+            android:layout_gravity="center"
+            android:layout_marginTop="25dp"
+            android:hint="@string/hint_title_profilename"
+            android:inputType="text" />
+
+        <EditText
+            android:id="@+id/editProfileBioView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:background="@drawable/edit_text_background"
+            android:ems="14"
+            android:layout_gravity="center"
+            android:hint="@string/hint_title_edit_description"
+            android:inputType="textMultiLine" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonConfirmChanges"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:textSize="18dp"
+            android:textStyle="bold"
+            android:text="@string/button_title_confirm"
+            app:backgroundTint="?attr/colorSecondaryVariant"
+            app:cornerRadius="30dp"/>
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

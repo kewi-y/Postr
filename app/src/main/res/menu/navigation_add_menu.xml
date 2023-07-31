@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/addPostMenuItem"
+        android:icon="@drawable/ic_pictureframe"
+        android:iconTint="?attr/colorOnPrimary"
+        android:title="@string/navigation_add_dialog_post_title"/>
+    <item
+        android:id="@+id/addStoryMenuItem"
+        android:icon="@drawable/ic_playcircle"
+        android:iconTint="?attr/colorOnPrimary"
+        android:title="@string/navigation_add_dialog_story_title"/>
+</menu>
