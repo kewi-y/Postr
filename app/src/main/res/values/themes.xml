@@ -19,6 +19,7 @@
         <item name="android:textColor">?attr/colorOnPrimary</item>
         <item name="editTextStyle">@style/EditTextStyle</item>
         <item name="android:popupMenuStyle">@style/PopupMenuStyle</item>
+        <item name="android:alertDialogTheme">@style/FullScreenDialogTheme</item>
     </style>
     <style name="BottomSheetDialogTheme" parent="Theme.Design.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/BottomSheetModalStyle</item>
@@ -33,5 +34,14 @@
     <style name="PopupMenuStyle" parent="@style/Widget.AppCompat.PopupMenu">
         <item name="android:popupBackground">@drawable/popup_background</item>
         <item name="android:overlapAnchor">true</item>
+    </style>
+    <style name="FullScreenDialogTheme" parent="android:Theme.Dialog">
+
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">fill_parent</item>
+        <item name="android:windowBackground">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:background">@android:color/transparent</item>
     </style>
 </resources>

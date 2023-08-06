@@ -31,6 +31,8 @@ import com.gprod.mediaio.interfaces.adapters.AddCommentClickListener;
 import com.gprod.mediaio.interfaces.adapters.AddToFavoritesClickListener;
 import com.gprod.mediaio.interfaces.adapters.AlbumClickListener;
 import com.gprod.mediaio.interfaces.adapters.LikeClickListener;
+import com.gprod.mediaio.interfaces.adapters.PostAuthorClickListener;
+import com.gprod.mediaio.interfaces.repositories.selectedUser.SelectUserCallback;
 import com.gprod.mediaio.interfaces.services.database.UpdatingPostCallback;
 import com.gprod.mediaio.models.album.Album;
 import com.gprod.mediaio.models.post.Post;
@@ -150,10 +152,27 @@ public class FavoritesFragment extends Fragment {
                 navController.navigate(R.id.addAlbumFragment);
             }
         });
+        PostAuthorClickListener postAuthorClickListener = new PostAuthorClickListener() {
+            @Override
+            public void onClick(String authorId) {
+                viewModel.selectUser(authorId, new SelectUserCallback() {
+                    @Override
+                    public void onSelected() {
+                        navController.navigate(R.id.navigation_profile);
+                    }
+
+                    @Override
+                    public void onFailure() {
+
+                    }
+                });
+            }
+        };
         albumPagerItemListAdapter.setAlbumClickListener(albumClickListener);
         favoritesPostListAdapter.setAddToFavoritesClickListener(addToFavoritesClickListener);
         favoritesPostListAdapter.setAddCommentClickListener(addCommentClickListener);
         favoritesPostListAdapter.setLikeClickListener(likeClickListener);
+        favoritesPostListAdapter.setPostAuthorClickListener(postAuthorClickListener);
         favoritesPostItemListLiveData.observe(getViewLifecycleOwner(), new Observer<ArrayList<PostItem>>() {
             @Override
             public void onChanged(ArrayList<PostItem> postItems) {

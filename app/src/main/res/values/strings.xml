@@ -2,11 +2,11 @@
     <string name="app_name">mediaIO</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="default_profile_picture_id">default_user_picture.jpg</string>
-    <string name="title_home">Home</string>
-    <string name="title_search">Search</string>
+    <string name="title_home">Главная</string>
+    <string name="title_search">Поиск</string>
     <string name="title_add">Добавить</string>
-    <string name="title_favorite">Favorite</string>
-    <string name="title_profile">Profile</string>
+    <string name="title_favorite">Избранное</string>
+    <string name="title_profile">Профиль</string>
     <string name="title_description">Описание</string>
     <string name="title_subscribers">Подписчики</string>
     <string name="title_subscribes">Подписки</string>
@@ -45,6 +45,7 @@
     <string name="navigation_add_dialog_story_title">Записать Историю</string>
     <string name="choose_image_source_dialog_camera_title">Сделать фото</string>
     <string name="choose_image_source_dialog_gallery_title">Выбрать из галлереи</string>
+    <string name="choose_image_dialog_title">Выберите изображение</string>
     <string name="title_add_description">Добавить описание</string>
     <string name="hint_title_edit_description">Описание</string>
     <string name="button_title_add_post">Опубликовать</string>
@@ -72,4 +73,5 @@
     <string name="story_length">15000</string>
     <string name="story_timer_tick">100</string>
     <string name="story_api_url"> https://great-accepted-muskrat.ngrok-free.app</string>
+    <string name="day_in_unix">86400</string>
 </resources>

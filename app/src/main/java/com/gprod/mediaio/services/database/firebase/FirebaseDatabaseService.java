@@ -3,7 +3,9 @@ package com.gprod.mediaio.services.database.firebase;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
+import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -16,7 +18,10 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.gprod.mediaio.enums.post.PostTypes;
@@ -39,6 +44,7 @@ import com.gprod.mediaio.models.post.Tag;
 
 import org.checkerframework.checker.units.qual.A;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -355,7 +361,7 @@ public class FirebaseDatabaseService {
      public void searchUser(String searchQueryString, SearchingUserCallback searchingUserCallback){
         ArrayList<User> foundedUsers = new ArrayList<>();
         firestoreDatabaseReference = firestoreDatabase.collection("users");
-        com.google.firebase.firestore.Query searchQuery = firestoreDatabaseReference.whereGreaterThanOrEqualTo("profilename",searchQueryString);
+        com.google.firebase.firestore.Query searchQuery = firestoreDatabaseReference.orderBy("profilename").startAt(searchQueryString).limit(20);
         searchQuery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -450,6 +456,7 @@ public class FirebaseDatabaseService {
         postHashMap.put("comments",post.getComments());
         postHashMap.put("likes",post.getLikes());
         postHashMap.put("stringTagList",post.getStringTagList());
+        postHashMap.put("timestamp",post.getTimestamp().getTime());
         if(post.getPostType() == PostTypes.IMAGE_POST){
             postHashMap.put("imageDownloadUriList",((ImagePost) post).getPostImageDownloadUriList());
         }
@@ -457,20 +464,21 @@ public class FirebaseDatabaseService {
         return postHashMap;
     }
     private Post getPostFormMap(Map<String, Object> postMap){
-        if(postMap.get("postType").equals(PostTypes.IMAGE_POST.toString())){
-            ArrayList<Comment> comments = new ArrayList<>();
-            ArrayList<Map> commentsMapList = (ArrayList<Map>) postMap.get("comments");
-            if(commentsMapList != null) {
-                for(Map commentMap : commentsMapList){
-                    comments.add(new Comment((String) commentMap.get("id"),(String) commentMap.get("authorId"),
-                            (String) commentMap.get("authorName"),(String) commentMap.get("authorProfilePhotoDownloadUri"),
-                            (String) commentMap.get("content")));
-                }
+        ArrayList<Comment> comments = new ArrayList<>();
+        ArrayList<Map> commentsMapList = (ArrayList<Map>) postMap.get("comments");
+        if(commentsMapList != null) {
+            for(Map commentMap : commentsMapList){
+                comments.add(new Comment((String) commentMap.get("id"),(String) commentMap.get("authorId"),
+                        (String) commentMap.get("authorName"),(String) commentMap.get("authorProfilePhotoDownloadUri"),
+                        (String) commentMap.get("content")));
             }
+        }
+        if(postMap.get("postType").equals(PostTypes.IMAGE_POST.toString())){
             ImagePost post = new ImagePost((String) postMap.get("authorId"),(String) postMap.get("postId"),
                     (ArrayList<String>) postMap.get("imageDownloadUriList"),(String) postMap.get("description"),
                     (ArrayList<String>) postMap.get("likes"),comments,
                     (ArrayList<String>) postMap.get("stringTagList"));
+            post.setTimestamp((long) postMap.get("timestamp"));
             return post;
         }
         //TODO: add if statements for other post types

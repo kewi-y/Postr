@@ -35,8 +35,7 @@
             tools:layout="@layout/add_image_post_fragment" >
             <action
                 android:id="@+id/action_add_image_post_fragment_to_image_camera_fragment"
-                app:destination="@id/image_camera_fragment"
-                app:popUpTo="@id/add_image_post_fragment"/>
+                app:destination="@id/image_camera_fragment"/>
         </fragment>
         <fragment
             android:id="@+id/edit_profile_fragment"
@@ -47,7 +46,12 @@
             android:id="@+id/image_camera_fragment"
             android:name="com.gprod.mediaio.ui.fragments.camera.image.ImageCameraFragment"
             android:label="image_camera_fragment"
-            tools:layout="@layout/image_camera_fragment" />
+            tools:layout="@layout/image_camera_fragment" >
+            <action
+                android:id="@+id/action_image_camera_fragment_to_imageProcessingFragment"
+                app:popUpTo="@id/image_camera_fragment"
+                app:destination="@id/imageProcessingFragment" />
+        </fragment>
         <fragment
             android:id="@+id/detailedPostFragment"
             android:name="com.gprod.mediaio.ui.fragments.detailedImagePost.DetailedImagePostFragment"

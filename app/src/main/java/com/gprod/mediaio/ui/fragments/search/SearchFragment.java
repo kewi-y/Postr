@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorInflater;
 import android.animation.AnimatorListenerAdapter;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +43,7 @@ public class SearchFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+        Log.d("MY LOGS", "On create search fragment");
         viewModel = new ViewModelProvider(this).get(SearchViewModel.class);
         View root = inflater.inflate(R.layout.search_fragment,container,false);
         Animator searchResultTabAnimation = AnimatorInflater.loadAnimator(getContext(),R.animator.show_up);
@@ -57,10 +59,10 @@ public class SearchFragment extends Fragment {
             @Override
             public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
                 if(position == 0) {
-                    tab.setText("Users");
+                    tab.setText("Пользователи");
                 }
                 else {
-                    tab.setText("Hashtags");
+                    tab.setText("Хэштеги");
                 }
             }
         });
@@ -76,14 +78,10 @@ public class SearchFragment extends Fragment {
         searchResultItemsListLiveData.observe(getViewLifecycleOwner(), new Observer<ArrayList<SearchResultItem>>() {
             @Override
             public void onChanged(ArrayList<SearchResultItem> searchResultItems) {
-                if(searchResultFragmentAdapter == null){
-                    searchResultFragmentAdapter = new SearchResultFragmentAdapter(SearchFragment.this, searchResultItems);
-                    searchResultFragmentPager.setAdapter(searchResultFragmentAdapter);
+                searchResultFragmentAdapter = new SearchResultFragmentAdapter(SearchFragment.this, searchResultItems);
+                searchResultFragmentPager.setAdapter(searchResultFragmentAdapter);
+                if(!tabLayoutMediator.isAttached()) {
                     tabLayoutMediator.attach();
-                }
-                else {
-                    searchResultFragmentAdapter.updateSearchResultItemList(searchResultItems);
-                    searchResultFragmentAdapter.notifyDataSetChanged();
                 }
                 searchResultFragmentPager.setVisibility(View.VISIBLE);
                 searchResultTabLayout.setVisibility(View.VISIBLE);

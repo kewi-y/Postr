@@ -1,7 +1,11 @@
 package com.gprod.mediaio.ui.fragments.add.post.image;
 
+import android.content.ContentResolver;
 import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
@@ -17,16 +21,23 @@ import com.gprod.mediaio.repositories.PostRepository;
 import com.gprod.mediaio.repositories.TempPhotoRepository;
 import com.gprod.mediaio.repositories.UserRepository;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Collections;
+
+import javax.xml.validation.Schema;
 
 public class AddImagePostViewModel extends ViewModel {
     private UserRepository userRepository;
     private PostRepository postRepository;
 
     private TempPhotoRepository tempPhotoRepository;
-    private ArrayList<Bitmap> attachedImageList = new ArrayList<>();
+    private ArrayList<String> galleryImageList = new ArrayList<>();
 
     private MutableLiveData<Bitmap> postImageData = new MutableLiveData<>();
+    private MutableLiveData<ArrayList<String>> galleryImageListLiveData = new MutableLiveData<>();
     private MutableLiveData<ArrayList<Bitmap>> attachedImageListLiveData = new MutableLiveData<>();
     public AddImagePostViewModel(){
         userRepository = UserRepository.getInstance();
@@ -48,6 +59,7 @@ public class AddImagePostViewModel extends ViewModel {
                         userRepository.updateUser(updatableUser, new UpdatingUserCallback() {
                             @Override
                             public void onSuccess(User updatedUser) {
+                                tempPhotoRepository.clearAttachedImageList();
                                 writingPostCallback.OnSuccess();
                             }
 
@@ -71,14 +83,35 @@ public class AddImagePostViewModel extends ViewModel {
         });
     }
     private void attachImage(Bitmap image){
-        attachedImageList.add(image);
-        attachedImageListLiveData.setValue(attachedImageList);
+        tempPhotoRepository.attachImage(image);
+        attachedImageListLiveData.setValue(tempPhotoRepository.getAttachedImageList());
     }
     public void updateData(){
         if(tempPhotoRepository.getTempImageBitmap() != null){
             attachImage(tempPhotoRepository.getTempImageBitmap());
             tempPhotoRepository.clearTempImage();
         }
+    }
+    public void clearAttachedImageList(){
+        tempPhotoRepository.clearAttachedImageList();
+    }
+    public void loadGalleryImageList(Context context){
+        if(galleryImageList.size() > 0){
+            galleryImageList.clear();
+        }
+        ContentResolver contentResolver = context.getContentResolver();
+        String[] projection = {MediaStore.MediaColumns.DATA};
+        Cursor cursor = contentResolver.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,projection,null,null,null);
+        while (cursor.moveToNext()){
+            String stringUri = cursor.getString(0);
+            File file = new File(stringUri);
+            Uri uri = Uri.fromFile(file);
+            stringUri = uri.toString();
+            Log.d("MY LOGS", "Gallery Image Uri >>: " + stringUri);
+            galleryImageList.add(stringUri);
+        }
+        Collections.reverse(galleryImageList);
+        galleryImageListLiveData.setValue(galleryImageList);
     }
     public void selectImage(Context context,Bitmap image){
         tempPhotoRepository.setTempImage(context,image);
@@ -109,7 +142,11 @@ public class AddImagePostViewModel extends ViewModel {
         return postImageData;
     }
 
-    public MutableLiveData<ArrayList<Bitmap>> getAttachedImageListLiveData() {
+    public LiveData<ArrayList<Bitmap>> getAttachedImageListLiveData() {
         return attachedImageListLiveData;
+    }
+
+    public LiveData<ArrayList<String>> getGalleryImageListLiveData() {
+        return galleryImageListLiveData;
     }
 }

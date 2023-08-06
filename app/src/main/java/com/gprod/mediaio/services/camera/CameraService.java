@@ -141,5 +141,4 @@ public class CameraService {
     public void stopRecording(){
         videoCapture.stopRecording();
     }
-
 }

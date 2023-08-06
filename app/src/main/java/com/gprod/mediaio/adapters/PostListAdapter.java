@@ -27,6 +27,7 @@ import com.gprod.mediaio.enums.post.PostTypes;
 import com.gprod.mediaio.interfaces.adapters.AddCommentClickListener;
 import com.gprod.mediaio.interfaces.adapters.AddToFavoritesClickListener;
 import com.gprod.mediaio.interfaces.adapters.LikeClickListener;
+import com.gprod.mediaio.interfaces.adapters.PostAuthorClickListener;
 import com.gprod.mediaio.interfaces.adapters.PostViewTypes;
 import com.gprod.mediaio.interfaces.dialogs.comments.AddCommentListener;
 import com.gprod.mediaio.models.post.ImagePost;
@@ -44,6 +45,7 @@ public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.PostHo
     private LikeClickListener likeClickListener;
     private AddCommentClickListener addCommentClickListener;
     private AddToFavoritesClickListener addToFavoritesClickListener;
+    private PostAuthorClickListener postAuthorClickListener;
     public PostListAdapter(Context context, ArrayList<PostItem>postItemList, CommentsDialog commentsDialog){
         this.postItemList = postItemList;
         this.commentsDialog = commentsDialog;
@@ -57,6 +59,9 @@ public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.PostHo
     }
     public void setAddToFavoritesClickListener(AddToFavoritesClickListener addToFavoritesClickListener){
         this.addToFavoritesClickListener = addToFavoritesClickListener;
+    }
+    public void setPostAuthorClickListener(PostAuthorClickListener postAuthorClickListener){
+        this.postAuthorClickListener = postAuthorClickListener;
     }
     public void updatePostItemList(ArrayList<PostItem> postItemList){
         this.postItemList = postItemList;
@@ -163,7 +168,7 @@ public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.PostHo
             tabLayoutMediator.attach();
             profilePhotoView.setImageURI(postItem.getUserProfilePhotoDownloadUri());
             displayGeneralData(descriptionView,likeCountView,commentsCountView,usernameView,accountnameView,postItem);
-            setGeneralListeners(postItem,this.itemView,likeButton,commentButton,addToFavoritesFragment);
+            setGeneralListeners(postItem,this.itemView,likeButton,commentButton,addToFavoritesFragment,profilePhotoView);
         }
     }
     class VideoPostHolder extends PostHolder{
@@ -219,7 +224,7 @@ public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.PostHo
         accountnameView.setText(postItem.getAccountname());
     }
 
-    private void setGeneralListeners(PostItem postItem,View itemView,ImageButton likeButton,ImageButton commentButton,ImageButton addToFavoritesButton){
+    private void setGeneralListeners(PostItem postItem,View itemView,ImageButton likeButton,ImageButton commentButton,ImageButton addToFavoritesButton,View profilePhotoView){
         Post post = postItem.getPost();
         TypedValue typedValue = new TypedValue();
         if(postItem.isOnLike()){
@@ -265,6 +270,14 @@ public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.PostHo
             public void onClick(View view) {
                 if(addToFavoritesClickListener != null){
                     addToFavoritesClickListener.onCLick(postItem);
+                }
+            }
+        });
+        profilePhotoView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(postAuthorClickListener != null){
+                    postAuthorClickListener.onClick(postItem.getPost().getAuthorId());
                 }
             }
         });

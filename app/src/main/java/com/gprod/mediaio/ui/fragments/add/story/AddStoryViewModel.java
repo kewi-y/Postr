@@ -29,6 +29,7 @@ public class AddStoryViewModel extends ViewModel {
     private StoryRepository storyRepository;
     private UserRepository userRepository;
     private CameraService cameraService;
+    private CountDownTimer storyTimer;
     public AddStoryViewModel(){
         userRepository = UserRepository.getInstance();
     }
@@ -54,7 +55,7 @@ public class AddStoryViewModel extends ViewModel {
     public void recordVideoStory(Context context, RecordingVideoStoryCallback recordingVideoStoryCallback){
         long storyLength = Long.parseLong(context.getResources().getString(R.string.story_length));
         long storyTimerTick = Long.parseLong(context.getResources().getString(R.string.story_timer_tick));
-        CountDownTimer countDownTimer = new CountDownTimer(storyLength,storyTimerTick) {
+        storyTimer = new CountDownTimer(storyLength,storyTimerTick) {
             @Override
             public void onTick(long l) {
                 int percent = (int) ((((float)storyLength - l) / ((float)storyLength)) * 100f);
@@ -92,11 +93,14 @@ public class AddStoryViewModel extends ViewModel {
                 recordingVideoStoryCallback.onFailure();
             }
         });
-        countDownTimer.start();
+        storyTimer.start();
         recordingVideoStoryCallback.onStarted();
     }
     public void stopRecordVideoStory(){
-        cameraService.stopRecording();
+        if(storyTimer != null) {
+            cameraService.stopRecording();
+            storyTimer.cancel();
+        }
     }
     public void captureImageStory(Context context, CapturingImageStoryCallback capturingImageStoryCallback){
         cameraService.takePhoto(context, new TakingPhotoCallback() {

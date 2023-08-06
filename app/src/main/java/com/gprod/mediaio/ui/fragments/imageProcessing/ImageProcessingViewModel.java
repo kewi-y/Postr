@@ -39,7 +39,8 @@ public class ImageProcessingViewModel extends ViewModel {
         }
     }
     public void denyChanges(){
-        tempImageLiveData.setValue(imageProcessingRepository.denyChanges());
+        imageProcessingRepository.denyChanges();
+        tempImageLiveData.setValue(imageProcessingRepository.getActualImage());
     }
     public void renderBrightness(int value){
         Bitmap renderedImage = imageProcessingRepository.renderBrightness(value);

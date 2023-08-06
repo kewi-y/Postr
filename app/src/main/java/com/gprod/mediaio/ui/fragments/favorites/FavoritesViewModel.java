@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.gprod.mediaio.interfaces.repositories.selectedUser.SelectUserCallback;
 import com.gprod.mediaio.interfaces.services.database.GettingPostByIdCallback;
 import com.gprod.mediaio.interfaces.services.database.GettingUserByIdCallback;
 import com.gprod.mediaio.interfaces.services.database.UpdatingPostCallback;
@@ -17,6 +18,7 @@ import com.gprod.mediaio.models.post.Post;
 import com.gprod.mediaio.models.post.PostItem;
 import com.gprod.mediaio.repositories.PostRepository;
 import com.gprod.mediaio.repositories.SelectedAlbumRepository;
+import com.gprod.mediaio.repositories.SelectedUserRepository;
 import com.gprod.mediaio.repositories.UserRepository;
 import com.gprod.mediaio.services.popup.loading.LoadingPopup;
 
@@ -27,12 +29,14 @@ public class FavoritesViewModel extends ViewModel {
     private UserRepository userRepository;
     private PostRepository postRepository;
     private SelectedAlbumRepository selectedAlbumRepository;
+    private SelectedUserRepository selectedUserRepository;
     private MutableLiveData<ArrayList<PostItem>> favoritesPostItemListLiveData = new MutableLiveData<>();
     private MutableLiveData<ArrayList<Album>> albumListLiveData = new MutableLiveData<>();
     public FavoritesViewModel(){
         userRepository = UserRepository.getInstance();
         postRepository = PostRepository.getInstance();
         selectedAlbumRepository = SelectedAlbumRepository.getInstance();
+        selectedUserRepository = SelectedUserRepository.getInstance();
     }
 
     public LiveData<ArrayList<PostItem>> getFavoritesPostItemListLiveData() {
@@ -59,6 +63,20 @@ public class FavoritesViewModel extends ViewModel {
     }
     public void addComment(Post post, String commentString,UpdatingPostCallback updatingPostCallback){
         postRepository.addComment(post,userRepository.getUser(),commentString,updatingPostCallback);
+    }
+    public void selectUser(String userId, SelectUserCallback selectUserCallback){
+        userRepository.getUserByID(userId, new GettingUserByIdCallback() {
+            @Override
+            public void onSuccess(User user) {
+                selectedUserRepository.setSelectedUser(user);
+                selectUserCallback.onSelected();
+            }
+
+            @Override
+            public void onFailure() {
+                selectUserCallback.onFailure();
+            }
+        });
     }
     public void removePostFromFavorites(PostItem postItem){
         userRepository.removePostFromFavorites(postItem.getPost(), new UpdatingUserCallback() {

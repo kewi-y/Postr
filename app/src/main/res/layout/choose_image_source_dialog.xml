@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="200dp">
 
     <LinearLayout
         android:id="@+id/dialogCameraSourceItem"
@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
         android:orientation="horizontal"
+        android:background="@drawable/cropped_primary_color_variant_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -20,6 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="10dp"
+            app:tint="?attr/colorOnPrimary"
             android:layout_weight="1"
             app:srcCompat="@drawable/ic_camera" />
 
@@ -28,7 +30,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/choose_image_source_dialog_camera_title"
-            android:textColor="@color/black"
             android:textSize="18dp"
             android:textStyle="bold" />
     </LinearLayout>
@@ -40,6 +41,7 @@
         android:orientation="horizontal"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="20dp"
+        android:background="@drawable/cropped_primary_color_variant_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/dialogCameraSourceItem">
@@ -50,6 +52,7 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="10dp"
             android:layout_weight="1"
+            app:tint="?attr/colorOnPrimary"
             app:srcCompat="@drawable/ic_pictureframe" />
 
         <TextView
@@ -58,7 +61,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/choose_image_source_dialog_gallery_title"
-            android:textColor="@color/black"
             android:textSize="18dp"
             android:textStyle="bold" />
 

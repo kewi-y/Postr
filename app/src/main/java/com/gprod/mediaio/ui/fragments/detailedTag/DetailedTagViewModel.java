@@ -5,6 +5,7 @@ import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.gprod.mediaio.interfaces.repositories.selectedUser.SelectUserCallback;
 import com.gprod.mediaio.interfaces.services.database.GettingPostListCallback;
 import com.gprod.mediaio.interfaces.services.database.GettingUserByIdCallback;
 import com.gprod.mediaio.interfaces.services.database.UpdatingPostCallback;
@@ -14,6 +15,7 @@ import com.gprod.mediaio.models.post.Post;
 import com.gprod.mediaio.models.post.PostItem;
 import com.gprod.mediaio.repositories.PostRepository;
 import com.gprod.mediaio.repositories.SelectedTagRepository;
+import com.gprod.mediaio.repositories.SelectedUserRepository;
 import com.gprod.mediaio.repositories.UserRepository;
 
 import java.util.ArrayList;
@@ -22,11 +24,13 @@ public class DetailedTagViewModel extends ViewModel {
     private PostRepository postRepository;
     private UserRepository userRepository;
     private SelectedTagRepository selectedTagRepository;
+    private SelectedUserRepository selectedUserRepository;
     private MutableLiveData<ArrayList<PostItem>>postItemListLiveData = new MutableLiveData<>();
     public DetailedTagViewModel(){
         postRepository = PostRepository.getInstance();
         userRepository = UserRepository.getInstance();
         selectedTagRepository = SelectedTagRepository.getInstance();
+        selectedUserRepository = SelectedUserRepository.getInstance();
     }
 
     public MutableLiveData<ArrayList<PostItem>> getPostItemListLiveData() {
@@ -93,6 +97,20 @@ public class DetailedTagViewModel extends ViewModel {
             @Override
             public void onFailure() {
 
+            }
+        });
+    }
+    public void selectUser(String userId, SelectUserCallback selectUserCallback){
+        userRepository.getUserByID(userId, new GettingUserByIdCallback() {
+            @Override
+            public void onSuccess(User user) {
+                selectedUserRepository.setSelectedUser(user);
+                selectUserCallback.onSelected();
+            }
+
+            @Override
+            public void onFailure() {
+                selectUserCallback.onFailure();
             }
         });
     }

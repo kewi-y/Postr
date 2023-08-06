@@ -71,6 +71,7 @@ public class UserRepository {
                             user.setSubscribers(new ArrayList<>());
                             user.setSubscriptions(new ArrayList<>());
                             user.setFavoritesPostList(new ArrayList<>());
+                            user.setFavoritesAlbumList(new ArrayList<>());
                             user.setSubscriptionsCount(0);
                             user.setPublicationsCount(0);
                             user.setSubscribersCount(0);
@@ -268,6 +269,20 @@ public class UserRepository {
                 });
             }
         }
+    }
+    public void updateActualUserInfo(UpdatingUserCallback updatingUserCallback){
+        firebaseDatabaseService.getUserById(user.getId(), new GettingUserByIdCallback() {
+            @Override
+            public void onSuccess(User user) {
+                instance.user = user;
+                updatingUserCallback.onSuccess(user);
+            }
+
+            @Override
+            public void onFailure() {
+                Log.d("MY LOGS","Error updating user");
+            }
+        });
     }
     public void addPostToFavorites(Post post, UpdatingUserCallback updatingUserCallback){
         if(user.getFavoritesPostList() == null){

@@ -44,7 +44,7 @@ public class ImageCameraFragment extends Fragment {
                     viewModel.takePhoto(getContext(), new TakingPhotoCallback() {
                         @Override
                         public void onTaken(Bitmap image) {
-                            navController.popBackStack();
+                            navController.navigate(R.id.action_image_camera_fragment_to_imageProcessingFragment);
                         }
                         @Override
                         public void onFailure() {

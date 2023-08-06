@@ -13,6 +13,7 @@ import com.gprod.mediaio.models.story.ImageStory;
 import com.gprod.mediaio.models.story.Story;
 import com.gprod.mediaio.models.story.VideoStory;
 
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Map;
@@ -93,12 +94,14 @@ public class StoryApiService {
             @Override
             public void onResponse(Call<ArrayList<String>> call, Response<ArrayList<String>> response) {
                 if(response.isSuccessful()){
+                    Log.d("MY LOGS","Story Api response >>: " + response);
                     gettingStoriesByAuthorId.onSuccess(response.body());
                 }
             }
 
             @Override
             public void onFailure(Call<ArrayList<String>> call, Throwable t) {
+                t.printStackTrace();
                 gettingStoriesByAuthorId.onFailure();
             }
         });
@@ -106,12 +109,18 @@ public class StoryApiService {
     private Story getStoryFromMap(Map<String, Object> storyMap){
         Story story;
         if(storyMap.get("storyType").equals(StoryType.IMAGE_STORY.toString())){
+            String stringTimestamp = ((String) storyMap.get("timestamp")).replace("T"," ");
+            stringTimestamp = stringTimestamp.substring(0,stringTimestamp.indexOf("+"));
             story = new ImageStory((String) storyMap.get("id"),(String) storyMap.get("authorId"),
-                    (String)storyMap.get("downloadImageUri"),(Timestamp)storyMap.get("timestamp"));
+                    (String)storyMap.get("downloadImageUri"),Timestamp.valueOf(stringTimestamp));
             return story;
         }
         else if(storyMap.get("storyType").equals(StoryType.VIDEO_STORY.toString())){
-            return null;
+            String stringTimestamp = ((String) storyMap.get("timestamp")).replace("T"," ");
+            stringTimestamp = stringTimestamp.substring(0,stringTimestamp.indexOf("+"));
+            story = new VideoStory((String) storyMap.get("id"),(String) storyMap.get("authorId"),
+                    (String) storyMap.get("downloadVideoUri"),Timestamp.valueOf(stringTimestamp));
+            return story;
         }
         else {
             return null;

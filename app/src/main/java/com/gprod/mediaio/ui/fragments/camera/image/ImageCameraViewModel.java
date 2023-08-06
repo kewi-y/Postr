@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Camera;
 
 import androidx.camera.view.PreviewView;
 import androidx.core.content.ContextCompat;
@@ -38,9 +39,21 @@ public class ImageCameraViewModel extends ViewModel {
         }
     }
     public void initCamera(Context context, LifecycleOwner owner, PreviewView previewView){
-
+        cameraService = CameraService.getInstance(context);
+        cameraService.startCamera(context,previewView,owner);
     }
     public void takePhoto(Context context, TakingPhotoCallback takingPhotoCallback) {
+        cameraService.takePhoto(context, new TakingPhotoCallback() {
+            @Override
+            public void onTaken(Bitmap image) {
+                tempPhotoRepository.setTempImage(context,image);
+                takingPhotoCallback.onTaken(image);
+            }
 
+            @Override
+            public void onFailure() {
+                takingPhotoCallback.onFailure();
+            }
+        });
     }
 }

@@ -24,6 +24,7 @@ import com.gprod.mediaio.models.post.Tag;
 import com.gprod.mediaio.services.database.firebase.FirebaseDatabaseService;
 import com.gprod.mediaio.services.storage.firebase.FirebaseStorageService;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -44,9 +45,6 @@ public class PostRepository {
         firebaseStorageService = FirebaseStorageService.getInstance();
     }
 
-    public void generateFeed(){
-
-    }
     public void writeImagePost(String authorId,String description,ArrayList<Bitmap> imageList, WritingPostCallback writingPostCallback){
         String postId = UUID.randomUUID().toString();
         uploadImageList(imageList, new UploadImageListCallback() {
@@ -54,6 +52,7 @@ public class PostRepository {
             public void onSuccess(ArrayList<String> uploadedImageDownloadUriList) {
                 ImagePost imagePost = new ImagePost(authorId,postId,uploadedImageDownloadUriList,description,
                         new ArrayList<>(), new ArrayList<>(), getStringTagsInDescription(description));
+                imagePost.setTimestamp(System.currentTimeMillis());
                 firebaseDatabaseService.writePost(imagePost, new OnSuccessListener() {
                     @Override
                     public void onSuccess(Object o) {
@@ -101,9 +100,31 @@ public class PostRepository {
     public void getPostListByAuthorId(String authorId, GettingPostListCallback gettingPostListCallback){
         firebaseDatabaseService.getPostListByAuthorId(authorId,gettingPostListCallback);
     }
+    public void getFeedPostList(long loadTimestamp, ArrayList<String> authorIdList,GettingPostListCallback gettingPostListCallback){
+        ArrayList<Post> postList = new ArrayList<>();
+        for(String authorId : authorIdList){
+            firebaseDatabaseService.getPostListByAuthorId(authorId, new GettingPostListCallback() {
+                @Override
+                public void onSuccess(ArrayList<Post> posts) {
+                    for(Post post : posts){
+                        if(post.getTimestamp().getTime() > loadTimestamp){
+                            postList.add(post);
+                        }
+                    }
+                    gettingPostListCallback.onSuccess(posts);
+                }
+
+                @Override
+                public void onFailure() {
+                    gettingPostListCallback.onFailure();
+                }
+            });
+        }
+    }
     public void getPostById(String postId, GettingPostByIdCallback gettingPostByIdCallback){
         firebaseDatabaseService.getPostById(postId,gettingPostByIdCallback);
     }
+
     public void updatePost(Post post, UpdatingPostCallback updatingPostCallback){
         firebaseDatabaseService.updatePost(post,updatingPostCallback);
     }

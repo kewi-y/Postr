@@ -31,13 +31,7 @@ public class ProgressPopup {
         instance.progressBar.setProgress(0);
         instance.showAnimation = AnimatorInflater.loadAnimator(context, R.animator.loading_show);
         instance.showAnimation.setTarget(instance.popupView);
-        instance.showAnimation.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                instance.popupView.setVisibility(View.VISIBLE);
-            }
-        });
+        instance.popupView.setVisibility(View.VISIBLE);
         instance.showAnimation.start();
         instance.isShow = true;
     }

@@ -2,6 +2,7 @@ package com.gprod.mediaio.repositories;
 
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.util.Log;
 
 import com.gprod.mediaio.interfaces.repositories.story.GettingStoryListByAuthorIdCallback;
 import com.gprod.mediaio.interfaces.repositories.story.UploadFileProgressCallback;
@@ -39,15 +40,16 @@ public class StoryRepository {
         storyApiService.getStoriesIdByAuthorId(authorId, new GettingStoriesByAuthorId() {
             @Override
             public void onSuccess(ArrayList<String> storiesId) {
+                Story[] storyArray = new Story[storiesId.size()];
                 for(String storyId : storiesId){
-                    Story[] storyArray = new Story[storiesId.size()];
                     storyApiService.getStoryById(storyId, new GettingStoryByIdCallback() {
                         @Override
                         public void onSuccess(Story story) {
                             storyArray[storiesId.indexOf(storyId)] = story;
-                            if(Arrays.stream(storyArray).noneMatch(Objects::isNull)){
+                            if(Arrays.asList(storyArray).stream().noneMatch(Objects::isNull)){
                                 List<Story> storyList = Arrays.asList(storyArray);
-                                gettingStoryListByAuthorIdCallback.onSuccess((ArrayList<Story>) storyList);
+                                ArrayList<Story> storyArrayList = new ArrayList<Story>(storyList);
+                                gettingStoryListByAuthorIdCallback.onSuccess(storyArrayList);
                             }
                         }
 

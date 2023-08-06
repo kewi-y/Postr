@@ -9,6 +9,9 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.NavHost;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
@@ -22,6 +25,8 @@ import com.gprod.mediaio.adapters.PostListAdapter;
 import com.gprod.mediaio.interfaces.adapters.AddCommentClickListener;
 import com.gprod.mediaio.interfaces.adapters.AddToFavoritesClickListener;
 import com.gprod.mediaio.interfaces.adapters.LikeClickListener;
+import com.gprod.mediaio.interfaces.adapters.PostAuthorClickListener;
+import com.gprod.mediaio.interfaces.repositories.selectedUser.SelectUserCallback;
 import com.gprod.mediaio.interfaces.services.database.UpdatingPostCallback;
 import com.gprod.mediaio.interfaces.services.database.UpdatingUserCallback;
 import com.gprod.mediaio.models.user.User;
@@ -38,6 +43,7 @@ public class DetailedTagFragment extends Fragment {
     private PostListAdapter postListAdapter;
     private LiveData<ArrayList<PostItem>> postItemListLiveData;
     private CommentsDialog commentsDialog;
+    private NavController navController;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -45,6 +51,8 @@ public class DetailedTagFragment extends Fragment {
         viewModel = new ViewModelProvider(this).get(DetailedTagViewModel.class);
         View view = inflater.inflate(R.layout.detailed_tag_fragment_, container, false);
         postListView = view.findViewById(R.id.detailedTagPostListView);
+        NavHostFragment navHostFragment = (NavHostFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_activity_main);
+        navController = navHostFragment.getNavController();
         commentsDialog = CommentsDialog.getInstance(getActivity(),getActivity());
         postItemListLiveData = viewModel.getPostItemListLiveData();
         postListAdapter = new PostListAdapter(getContext(),postItemListLiveData.getValue(),commentsDialog);
@@ -135,9 +143,26 @@ public class DetailedTagFragment extends Fragment {
                 }
             }
         };
+        PostAuthorClickListener postAuthorClickListener = new PostAuthorClickListener() {
+            @Override
+            public void onClick(String authorId) {
+                viewModel.selectUser(authorId, new SelectUserCallback() {
+                    @Override
+                    public void onSelected() {
+                        navController.navigate(R.id.navigation_profile);
+                    }
+
+                    @Override
+                    public void onFailure() {
+
+                    }
+                });
+            }
+        };
         postListAdapter.setAddCommentClickListener(addCommentClickListener);
         postListAdapter.setLikeClickListener(likeClickListener);
         postListAdapter.setAddToFavoritesClickListener(addToFavoritesClickListener);
+        postListAdapter.setPostAuthorClickListener(postAuthorClickListener);
         postItemListLiveData.observe(getViewLifecycleOwner(), new Observer<ArrayList<PostItem>>() {
             @Override
             public void onChanged(ArrayList<PostItem> postItems) {

@@ -3,6 +3,7 @@ package com.gprod.mediaio.models.post;
 import com.gprod.mediaio.enums.post.PostTypes;
 import com.gprod.mediaio.models.post.Comment;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 public abstract class Post {
@@ -11,6 +12,7 @@ public abstract class Post {
     private ArrayList<Comment> comments;
     private ArrayList<String> likes;
     private ArrayList<String> stringTagList;
+    private Timestamp timestamp;
     public Post(String authorId, String postId, String description, ArrayList<String> likes, ArrayList<Comment> comments,ArrayList<String> stringTagList, PostTypes postType){
         this.authorId = authorId;
         this.description = description;
@@ -70,5 +72,11 @@ public abstract class Post {
 
     public ArrayList<String> getStringTagList() {
         return stringTagList;
+    }
+    public void setTimestamp(long timestamp){
+        this.timestamp = new Timestamp(timestamp);
+    }
+    public Timestamp getTimestamp(){
+        return timestamp;
     }
 }

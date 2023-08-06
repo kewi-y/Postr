@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'com.google.gms.google-services'
     id 'androidx.navigation.safeargs'
+    id 'com.google.firebase.crashlytics'
 }
 
 android {
@@ -59,4 +60,6 @@ dependencies {
     implementation "androidx.camera:camera-video:${camerax_version}"
     implementation "androidx.camera:camera-view:${camerax_version}"
     implementation "androidx.camera:camera-extensions:${camerax_version}"
+    implementation("com.google.firebase:firebase-crashlytics")
+    implementation("com.google.firebase:firebase-analytics")
 }

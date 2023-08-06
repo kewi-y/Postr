@@ -38,6 +38,7 @@ public class AddStoryFragment extends Fragment {
     private CameraType cameraType;
     private NavController navController;
     private ProgressBar recordingStoryProgressBar;
+    private boolean isRecording = false;
 
 
     @Override
@@ -82,7 +83,7 @@ public class AddStoryFragment extends Fragment {
             public void onClick(View view) {
                 if(cameraType != null){
                     if(cameraType == CameraType.VIDEO_TYPE){
-                        if(startRecordImageView.getDrawable() instanceof AnimatedVectorDrawable){
+                        if(!isRecording){
                             AnimatedVectorDrawable avdStartRecord = (AnimatedVectorDrawable) startRecordImageView.getDrawable();
                             AnimatedVectorDrawable avdStopRecord = (AnimatedVectorDrawable) getResources().getDrawable(R.drawable.avd_stop_record_anim,getActivity().getTheme());
                             viewModel.recordVideoStory(getContext(), new RecordingVideoStoryCallback() {
@@ -90,6 +91,7 @@ public class AddStoryFragment extends Fragment {
                                 public void onStarted() {
                                     Log.d("MY LOGS","Start recording video story");
                                     recordingStoryProgressBar.setVisibility(View.VISIBLE);
+                                    isRecording = true;
                                     avdStartRecord.start();
                                 }
 
@@ -107,6 +109,7 @@ public class AddStoryFragment extends Fragment {
                                 @Override
                                 public void onFinish() {
                                     Log.d("MY LOGS","On finish recording story");
+                                    recordingStoryProgressBar.setVisibility(View.INVISIBLE);
                                     ProgressPopup.hide(getContext());
                                     navController.navigate(R.id.navigation_home);
                                     getActivity().findViewById(R.id.nav_view).setVisibility(View.VISIBLE);
@@ -130,6 +133,10 @@ public class AddStoryFragment extends Fragment {
                                     getActivity().findViewById(R.id.nav_view).setVisibility(View.VISIBLE);
                                 }
                             });
+                        }
+                        else {
+                            viewModel.stopRecordVideoStory();
+                            isRecording = false;
                         }
                     }
                     if(cameraType == CameraType.IMAGE_TYPE){

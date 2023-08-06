@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.gprod.mediaio.enums.post.PostTypes;
+import com.gprod.mediaio.interfaces.repositories.selectedUser.SelectUserCallback;
 import com.gprod.mediaio.interfaces.services.database.GettingPostByIdCallback;
 import com.gprod.mediaio.interfaces.services.database.GettingTagByStringTagCallback;
 import com.gprod.mediaio.interfaces.services.database.GettingUserByIdCallback;
@@ -17,6 +18,7 @@ import com.gprod.mediaio.models.post.Tag;
 import com.gprod.mediaio.repositories.PostRepository;
 import com.gprod.mediaio.repositories.SelectedPostRepository;
 import com.gprod.mediaio.repositories.SelectedTagRepository;
+import com.gprod.mediaio.repositories.SelectedUserRepository;
 import com.gprod.mediaio.repositories.UserRepository;
 
 public class DetailedImagePostViewModel extends ViewModel {

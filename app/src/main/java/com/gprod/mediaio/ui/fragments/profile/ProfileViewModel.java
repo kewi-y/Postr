@@ -1,6 +1,7 @@
 package com.gprod.mediaio.ui.fragments.profile;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -57,7 +58,6 @@ public class ProfileViewModel extends ViewModel {
                         postListLiveData.getValue().clear();
                     }
                     postListLiveData.setValue(posts);
-                    selectedUserRepository.clearSelectedUser();
                 }
 
                 @Override
@@ -67,24 +67,37 @@ public class ProfileViewModel extends ViewModel {
             });
         }
         else {
-            userLiveData.setValue(userRepository.getUser());
-            profileTypeLifeData.setValue(ProfileTypes.SELF_PROFILE);
-            postRepository.getPostListByAuthorId(userRepository.getUser().getId(), new GettingPostListCallback() {
+            userRepository.updateActualUserInfo(new UpdatingUserCallback() {
                 @Override
-                public void onSuccess(ArrayList<Post> posts) {
-                    LoadingPopup.hide(context);
-                    if(postListLiveData.getValue() != null) {
-                        postListLiveData.getValue().clear();
-                    }
-                    postListLiveData.setValue(posts);
+                public void onSuccess(User updatedUser) {
+                    profileTypeLifeData.setValue(ProfileTypes.SELF_PROFILE);
+                    userLiveData.setValue(updatedUser);
+                    postRepository.getPostListByAuthorId(userRepository.getUser().getId(), new GettingPostListCallback() {
+                        @Override
+                        public void onSuccess(ArrayList<Post> posts) {
+                            LoadingPopup.hide(context);
+                            if(postListLiveData.getValue() != null) {
+                                postListLiveData.getValue().clear();
+                            }
+                            postListLiveData.setValue(posts);
+                        }
+
+                        @Override
+                        public void onFailure() {
+
+                        }
+                    });
                 }
 
                 @Override
-                public void onFailure() {
+                public void onFailure(String textError) {
 
                 }
             });
         }
+    }
+    public void clearSelectedUser(){
+        selectedUserRepository.clearSelectedUser();
     }
     public void subscribe(SubscribeCallback subscribeCallback){
         if(userLiveData.getValue() != null && userLiveData.getValue() != userRepository.getUser()){

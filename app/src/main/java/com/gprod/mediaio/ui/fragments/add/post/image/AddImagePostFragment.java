@@ -1,5 +1,6 @@
 package com.gprod.mediaio.ui.fragments.add.post.image;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
@@ -30,14 +31,17 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
 import com.gprod.mediaio.R;
 import com.gprod.mediaio.adapters.AttachedImageListAdapter;
+import com.gprod.mediaio.interfaces.adapters.OnSelectImageListener;
 import com.gprod.mediaio.interfaces.dialogs.imageSourceDialog.ChooseImageSourceDialogCallback;
 import com.gprod.mediaio.interfaces.services.database.WritingPostCallback;
 import com.gprod.mediaio.services.popup.loading.LoadingPopup;
 import com.gprod.mediaio.services.popup.notification.NotificationPopup;
 import com.gprod.mediaio.ui.dialogs.imageSource.ChooseImageSourceDialog;
+import com.gprod.mediaio.ui.dialogs.pickImage.PickImageDialog;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -54,9 +58,11 @@ public class AddImagePostFragment extends Fragment {
     private LiveData<Bitmap> postImageData;
     private RecyclerView attachedImageListView;
     private LiveData<ArrayList<Bitmap>> attachedImageListLiveData;
+    private LiveData<ArrayList<String>> galleryImageListLiveData;
     private Uri cameraImageUri;
     private ChooseImageSourceDialog chooseImageSourceDialog;
     private AttachedImageListAdapter attachedImageListAdapter;
+    private PickImageDialog pickImageDialog;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -68,11 +74,24 @@ public class AddImagePostFragment extends Fragment {
         descriptionEditText = root.findViewById(R.id.descriptionEditText);
         addPostButton = root.findViewById(R.id.buttonAddPost);
         chooseImageSourceDialog = ChooseImageSourceDialog.getInstance(getActivity());
+        pickImageDialog = PickImageDialog.getInstance(getContext());
         addImageButton = root.findViewById(R.id.addImageButton);
         attachedImageListView = root.findViewById(R.id.attachedImageListView);
         attachedImageListView.setLayoutManager(new GridLayoutManager(getContext(),3));
         attachedImageListLiveData = viewModel.getAttachedImageListLiveData();
-        ActivityResultLauncher cameraActivityLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+        galleryImageListLiveData = viewModel.getGalleryImageListLiveData();
+        OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.nav_view);
+                bottomNavigationView.setVisibility(View.VISIBLE);
+                viewModel.clearAttachedImageList();
+                navController.navigate(R.id.navigation_home);
+                this.remove();
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(onBackPressedCallback);
+        /*ActivityResultLauncher cameraActivityLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
             @Override
             public void onActivityResult(ActivityResult result) {
                 if(result.getResultCode() == Activity.RESULT_OK){
@@ -87,21 +106,21 @@ public class AddImagePostFragment extends Fragment {
                     }
                 }
             }
-        });
-        ActivityResultLauncher pickImageActivityLauncher = registerForActivityResult(new ActivityResultContracts.GetContent(), new ActivityResultCallback<Uri>() {
+        });*/
+        OnSelectImageListener onSelectImageListener = new OnSelectImageListener() {
             @Override
-            public void onActivityResult(Uri result) {
-                if(result != null) {
-                    try {
-                        Bitmap image = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), result);
-                        viewModel.selectImage(getContext(), image);
-                        navController.navigate(R.id.imageProcessingFragment);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
+            public void onSelect(String imageUri) {
+                try {
+                    viewModel.selectImage(getContext(),
+                            MediaStore.Images.Media.getBitmap(getContext().getContentResolver(),
+                                    Uri.parse(imageUri)));
+                    navController.navigate(R.id.imageProcessingFragment);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
                 }
             }
-        });
+        };
+        pickImageDialog.setOnSelectImageListener(onSelectImageListener);
         attachedImageListLiveData.observe(getViewLifecycleOwner(), new Observer<ArrayList<Bitmap>>() {
             @Override
             public void onChanged(ArrayList<Bitmap> images) {
@@ -114,23 +133,24 @@ public class AddImagePostFragment extends Fragment {
                 }
             }
         });
+        galleryImageListLiveData.observe(getViewLifecycleOwner(), new Observer<ArrayList<String>>() {
+            @Override
+            public void onChanged(ArrayList<String> strings) {
+                pickImageDialog.setImageList(strings);
+            }
+        });
         addImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 chooseImageSourceDialog.show(new ChooseImageSourceDialogCallback() {
                     @Override
                     public void onChooseCamera() {
-                        ContentValues values = new ContentValues();
-                        values.put(MediaStore.Images.Media.TITLE,getString(R.string.temp_photo_name));
-                        cameraImageUri = getContext().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,values);
-                        Intent cameraActivityIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                        cameraActivityIntent.putExtra(MediaStore.EXTRA_OUTPUT,cameraImageUri);
-                        cameraActivityLauncher.launch(cameraActivityIntent);
+                        navController.navigate(R.id.action_add_image_post_fragment_to_image_camera_fragment);
                     }
 
                     @Override
                     public void onChooseGallery() {
-                        pickImageActivityLauncher.launch("image/*");
+                        pickImageDialog.show();
                     }
                 });
             }
@@ -169,6 +189,7 @@ public class AddImagePostFragment extends Fragment {
             }
         });
         viewModel.updateData();
+        viewModel.loadGalleryImageList(getContext());
         return root;
     }
 }

@@ -20,11 +20,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.gprod.mediaio.R;
 import com.gprod.mediaio.adapters.ProfileItemsListAdapter;
 import com.gprod.mediaio.enums.post.PostTypes;
@@ -61,9 +63,8 @@ public class ProfileFragment extends Fragment {
     private LiveData<ArrayList<Post>> postListLiveData;
     private LiveData<ProfileTypes> profileTypeLiveData;
     private RecyclerView profileItemListView;
-    private boolean deletePostMode = false;
     private ProfileItemsListAdapter profileItemListAdapter;
-    private HideDeleteButtonListener hideDeleteButtonListener;
+    private View navView;
     private NavController navController;
     private NavHostFragment navHostFragment;
     private ProfilePostListItem profilePostListItem;
@@ -77,6 +78,7 @@ public class ProfileFragment extends Fragment {
         profileItems.clear();
         View root = inflater.inflate(R.layout.profile_fragment, container, false);
         View deletingFieldView = root.findViewById(R.id.deletingPostField);
+        navView = getActivity().findViewById(R.id.nav_view);
         Animator showDeletingFieldAnimation = AnimatorInflater.loadAnimator(getContext(),R.animator.show_down);
         Animator hideDeletingFieldAnimation = AnimatorInflater.loadAnimator(getContext(),R.animator.hide_up);
         profileItemListView = root.findViewById(R.id.profileRootListView);
@@ -87,11 +89,29 @@ public class ProfileFragment extends Fragment {
         navController = navHostFragment.getNavController();
         userLiveData = viewModel.getUserLiveData();
         postListLiveData = viewModel.getPostListLiveData();
-        profileTypeLiveData =viewModel.getProfileTypeLifeData();
+        profileTypeLiveData = viewModel.getProfileTypeLifeData();
+        OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if(profileTypeLiveData.getValue() != null && profileTypeLiveData.getValue() == ProfileTypes.OTHER_USER_PROFILE){
+                    viewModel.clearSelectedUser();
+                    navView.setVisibility(View.VISIBLE);
+                    navController.popBackStack();
+                    this.remove();
+                }
+                else if (profileTypeLiveData.getValue() != null && profileTypeLiveData.getValue() == ProfileTypes.SELF_PROFILE) {
+                    navController.popBackStack();
+                    this.remove();
+                }
+
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(onBackPressedCallback);
         PostClickListener postCLickListener = new PostClickListener() {
             @Override
             public void onClick(Post post) {
                 if (post.getPostType().equals(PostTypes.IMAGE_POST)) {
+                    onBackPressedCallback.remove();
                     viewModel.setSelectedPost(post);
                     navController.navigate(R.id.detailedPostFragment);
                 }
@@ -101,6 +121,7 @@ public class ProfileFragment extends Fragment {
         EditProfileClickListener editProfileClickListener = new EditProfileClickListener() {
             @Override
             public void onClick(View view) {
+                onBackPressedCallback.remove();
                 navController.navigate(R.id.edit_profile_fragment);
             }
         };
@@ -239,6 +260,7 @@ public class ProfileFragment extends Fragment {
                     profileItem = new ProfileEditItem(editProfileClickListener);
                 }
                 else if(profileTypes == ProfileTypes.OTHER_USER_PROFILE) {
+                    navView.setVisibility(View.GONE);
                     if(!viewModel.getSubscribeStatus()){
                         profileItem = new ProfileSubscribeItem(subscribeClickListener);
                     }

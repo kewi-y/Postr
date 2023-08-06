@@ -7,11 +7,15 @@ import android.net.Uri;
 import com.gprod.mediaio.R;
 import com.gprod.mediaio.services.storage.internal.InternalStorageManager;
 
+import org.checkerframework.checker.units.qual.A;
+
 import java.io.File;
+import java.util.ArrayList;
 
 public class TempPhotoRepository {
     private Bitmap tempImage;
     private File tempImageFile;
+    private ArrayList<Bitmap> attachedImageList = new ArrayList<>();
     private static TempPhotoRepository instance;
     private InternalStorageManager internalStorageManager;
     public static TempPhotoRepository getInstance() {
@@ -46,5 +50,13 @@ public class TempPhotoRepository {
             internalStorageManager.deleteFile(tempImageFile);
         }
     }
-
+    public void attachImage(Bitmap image){
+        attachedImageList.add(image);
+    }
+    public void clearAttachedImageList(){
+        attachedImageList.clear();
+    }
+    public ArrayList<Bitmap> getAttachedImageList(){
+        return attachedImageList;
+    }
 }
