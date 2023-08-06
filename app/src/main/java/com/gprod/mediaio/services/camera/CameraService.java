@@ -6,10 +6,14 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.media.MediaActionSound;
+import android.net.Uri;
 import android.os.Environment;
+import android.os.FileUtils;
 import android.provider.MediaStore;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.camera.core.CameraProvider;
 import androidx.camera.core.CameraSelector;
 import androidx.camera.core.ImageCapture;
@@ -37,6 +41,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.concurrent.ExecutionException;
 
 public class CameraService {
@@ -85,11 +92,10 @@ public class CameraService {
             @Override
             public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
                 try {
-                    Bitmap resultImage = MediaStore.Images.Media.getBitmap(context.getContentResolver(),outputFileResults.getSavedUri());
-                    takingPhotoCallback.onTaken(resultImage);
-                    File resultImageFile = new File(outputFileResults.getSavedUri().toString());
-                    if(resultImageFile.exists()){
-                        resultImageFile.delete();
+                    if(tempPhotoFile.exists()){
+                        Bitmap resultImage = MediaStore.Images.Media.getBitmap(context.getContentResolver(), Uri.fromFile(tempPhotoFile));
+                        takingPhotoCallback.onTaken(resultImage);
+                        tempPhotoFile.delete();
                     }
                 } catch (IOException e) {
                     takingPhotoCallback.onFailure();
@@ -103,8 +109,37 @@ public class CameraService {
             }
         });
     }
-    public void captureVideo(Context context, CaptureVideoCallback captureVideoCallback){
+    @SuppressLint({"RestrictedApi", "MissingPermission"})
+    public void startRecordingVideo(Context context, CaptureVideoCallback captureVideoCallback){
+        File tempVideoFile = new File(context.getFilesDir(),context.getString(R.string.temp_video_name));
+        VideoCapture.OutputFileOptions outputFileOptions = new VideoCapture.OutputFileOptions.Builder(tempVideoFile).build();
+        videoCapture.startRecording(outputFileOptions, ContextCompat.getMainExecutor(context), new VideoCapture.OnVideoSavedCallback() {
+            @Override
+            public void onVideoSaved(@NonNull VideoCapture.OutputFileResults outputFileResults) {
+                Log.d("MY LOGS","File saved >>: " + outputFileResults.getSavedUri().toString());
+                if(tempVideoFile.exists()){
+                    try {
+                        byte[] tempBytesFile = Files.readAllBytes(Paths.get(tempVideoFile.getPath()));
+                        captureVideoCallback.onCaptured(tempBytesFile);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                else {
+                    Log.d("MY LOGS", "file does not exists (why ???)");
+                }
+            }
 
+            @Override
+            public void onError(int videoCaptureError, @NonNull String message, @Nullable Throwable cause) {
+                Log.d("MY LOGS",message);
+                captureVideoCallback.onFailure();
+            }
+        });
+    }
+    @SuppressLint("RestrictedApi")
+    public void stopRecording(){
+        videoCapture.stopRecording();
     }
 
 }

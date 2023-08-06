@@ -16,6 +16,7 @@ import com.gprod.mediaio.models.story.ImageStory;
 import com.gprod.mediaio.repositories.StoryRepository;
 import com.gprod.mediaio.services.popup.loading.LoadingPopup;
 import com.gprod.mediaio.services.popup.notification.NotificationPopup;
+import com.gprod.mediaio.services.popup.progress.ProgressPopup;
 import com.gprod.mediaio.ui.dialogs.navigationAdd.NavigationAddDialog;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -41,8 +42,11 @@ public class MainActivity extends AppCompatActivity {
         FirebaseApp.initializeApp(this);
         TextView notificationsTextView = findViewById(R.id.notificationTextView);
         ProgressBar loadingPopupView = findViewById(R.id.loadingView);
+        ProgressBar progressPopupBar = findViewById(R.id.progressPopupBar);
+        View progressPopupView = findViewById(R.id.progressPopup);
         NotificationPopup.initialize(notificationsTextView);
         LoadingPopup.initialize(loadingPopupView);
+        ProgressPopup.initialize(progressPopupView,progressPopupBar);
         navView = findViewById(R.id.nav_view);
         bottomNavigationAddItemView = navView.findViewById(R.id.navigation_add);
         navView.setVisibility(View.GONE);
@@ -68,7 +72,8 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onSelectStory() {
-                        NotificationPopup.show(getApplicationContext(),true,"В разработке");
+                        navView.setVisibility(View.GONE);
+                        navController.navigate(R.id.addStoryFragment);
                     }
                 });
             }

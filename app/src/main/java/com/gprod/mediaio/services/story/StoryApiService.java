@@ -11,6 +11,7 @@ import com.gprod.mediaio.interfaces.services.story.GettingStoryByIdCallback;
 import com.gprod.mediaio.interfaces.services.story.StoryApi;
 import com.gprod.mediaio.models.story.ImageStory;
 import com.gprod.mediaio.models.story.Story;
+import com.gprod.mediaio.models.story.VideoStory;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -69,6 +70,20 @@ public class StoryApiService {
             public void onFailure(Call<String> call, Throwable t) {
                 addingStoryCallback.onFailure();
                 t.printStackTrace();
+            }
+        });
+    }
+    public void addVideoStory(VideoStory videoStory, AddingStoryCallback addingStoryCallback){
+        Call<String> addStoryCall = storyApi.addVideoStory(videoStory);
+        addStoryCall.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                addingStoryCallback.onSuccess();
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                addingStoryCallback.onFailure();
             }
         });
     }

@@ -2,12 +2,14 @@ package com.gprod.mediaio.services.storage.firebase;
 
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.gprod.mediaio.interfaces.services.storage.GettingFileDownloadUriCallback;
@@ -69,7 +71,32 @@ public class FirebaseStorageService {
             }
         });
     }
-    public void uploadVideo(){
-
+    public void uploadVideo(byte[] videoBytes, String videoId, UploadFileCallback uploadFileCallback){
+        reference = storage.getReference("videos");
+        UploadTask uploadTask = reference.child(videoId).putBytes(videoBytes);
+        uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
+                int percent = (int) ((float)snapshot.getBytesTransferred()/snapshot.getTotalByteCount() * 100);
+                uploadFileCallback.onProgress(percent);
+            }
+        });
+        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                reference.child(videoId).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        uploadFileCallback.onSuccess(uri);
+                    }
+                });
+            }
+        });
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                uploadFileCallback.onFailure();
+            }
+        });
     }
 }

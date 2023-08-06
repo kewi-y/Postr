@@ -60,6 +60,8 @@
     <string name="error_taking_photo_title">Не удалось сделать снимок</string>
     <string name="profile_posts_span_count">3</string>
     <string name="error_permissions_not_granted_title">Пожалуйста предоставьте приложению разрешения для корректной работы</string>
+    <string name="title_camera_mode_image">Фото</string>
+    <string name="title_camera_mode_video">Видео</string>
     <string name="profile_markup_info_item_index">0</string>
     <string name="profile_markup_edit_item_index">1</string>
     <string name="profile_markup_subscribe_item_index">1</string>
@@ -67,4 +69,7 @@
     <string name="profile_markup_unsubscribe_item_index">1</string>
     <string name="album_item_count_to_show">6</string>
     <string name="bottom_navigation_width">70dp</string>
+    <string name="story_length">15000</string>
+    <string name="story_timer_tick">100</string>
+    <string name="story_api_url"> https://great-accepted-muskrat.ngrok-free.app</string>
 </resources>

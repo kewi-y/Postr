@@ -1,6 +1,7 @@
 package com.gprod.mediaio.interfaces.services.story;
 
 import com.gprod.mediaio.models.story.ImageStory;
+import com.gprod.mediaio.models.story.VideoStory;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -18,5 +19,7 @@ public interface StoryApi {
     Call<ArrayList<String>> getStoriesByAuthorId(@Query("authorId") String authorId);
     @POST("addImageStory")
     Call<String> addImageStory(@Body ImageStory imageStory);
+    @POST("addVideoStory")
+    Call<String> addVideoStory(@Body VideoStory videoStory);
 
 }

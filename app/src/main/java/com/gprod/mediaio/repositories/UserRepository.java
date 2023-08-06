@@ -175,6 +175,12 @@ public class UserRepository {
                     }
                 });
             }
+
+            @Override
+            public void onProgress(int percent) {
+                uploadFileCallback.onProgress(percent);
+            }
+
             @Override
             public void onFailure() {
                 uploadFileCallback.onFailure();

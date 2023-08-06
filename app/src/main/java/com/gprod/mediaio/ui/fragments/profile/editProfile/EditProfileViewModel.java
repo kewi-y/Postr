@@ -66,6 +66,12 @@ public class EditProfileViewModel extends ViewModel {
                              updatingUserCallback.onSuccess(updatedUser);
                              tempPhotoRepository.clearTempImage();
                          }
+
+                         @Override
+                         public void onProgress(int percent) {
+
+                         }
+
                          @Override
                          public void onFailure() {
 

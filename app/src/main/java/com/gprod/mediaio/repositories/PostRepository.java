@@ -87,6 +87,11 @@ public class PostRepository {
                 }
 
                 @Override
+                public void onProgress(int percent) {
+
+                }
+
+                @Override
                 public void onFailure() {
                     uploadImageListCallback.onFailure();
                 }

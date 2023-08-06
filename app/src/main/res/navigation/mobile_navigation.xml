@@ -80,6 +80,11 @@
             android:name="com.gprod.mediaio.ui.fragments.imageProcessing.ImageProcessingFragment"
             android:label="image_processing_processing"
             tools:layout="@layout/image_processing_fragment" />
+        <fragment
+            android:id="@+id/addStoryFragment"
+            android:name="com.gprod.mediaio.ui.fragments.add.story.AddStoryFragment"
+            android:label="add_story_fragment"
+            tools:layout="@layout/add_story_fragment" />
     </navigation>
     <fragment
         android:id="@+id/authFragment"

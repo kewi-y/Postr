@@ -4,5 +4,6 @@ import android.net.Uri;
 
 public interface UploadFileCallback {
     public void onSuccess(Uri downloadUri);
+    public void onProgress(int percent);
     public void onFailure();
 }

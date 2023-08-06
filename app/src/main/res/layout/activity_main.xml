@@ -6,6 +6,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <LinearLayout
+        android:id="@+id/progressPopup"
+        android:layout_width="120dp"
+        android:layout_height="25dp"
+        android:orientation="horizontal"
+        android:layout_marginTop="20dp"
+        android:visibility="invisible"
+        android:background="@drawable/cropped_primary_color_variant_background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ProgressBar
+            android:id="@+id/progressPopupBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+    </LinearLayout>
+
     <TextView
         android:id="@+id/notificationTextView"
         android:layout_width="wrap_content"
