@@ -13,6 +13,7 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModel;
 
 import com.gprod.mediaio.R;
+import com.gprod.mediaio.interfaces.adapters.DetachImageListener;
 import com.gprod.mediaio.interfaces.fragments.add.story.CapturingImageStoryCallback;
 import com.gprod.mediaio.interfaces.fragments.add.story.RecordingVideoStoryCallback;
 import com.gprod.mediaio.interfaces.repositories.story.UploadFileProgressCallback;
@@ -51,6 +52,9 @@ public class AddStoryViewModel extends ViewModel {
     }
     public void startCamera(Context context, PreviewView previewView, LifecycleOwner owner){
         cameraService.startCamera(context,previewView,owner);
+    }
+    public void flipCamera(LifecycleOwner owner){
+        cameraService.flipCamera(owner);
     }
     public void recordVideoStory(Context context, RecordingVideoStoryCallback recordingVideoStoryCallback){
         long storyLength = Long.parseLong(context.getResources().getString(R.string.story_length));

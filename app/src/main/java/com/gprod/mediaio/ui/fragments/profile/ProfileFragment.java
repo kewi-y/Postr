@@ -20,29 +20,27 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.gprod.mediaio.R;
 import com.gprod.mediaio.adapters.ProfileItemsListAdapter;
 import com.gprod.mediaio.enums.post.PostTypes;
 import com.gprod.mediaio.enums.profile.ProfileItemTypes;
 import com.gprod.mediaio.enums.profile.ProfileTypes;
+import com.gprod.mediaio.enums.profile.ShareProfileTypes;
 import com.gprod.mediaio.interfaces.adapters.DeletePostListener;
 import com.gprod.mediaio.interfaces.adapters.EditProfileClickListener;
-import com.gprod.mediaio.interfaces.adapters.HideDeleteButtonListener;
 import com.gprod.mediaio.interfaces.adapters.PostClickListener;
 import com.gprod.mediaio.interfaces.adapters.DragPostListener;
+import com.gprod.mediaio.interfaces.fragments.profile.ShareProfileListener;
 import com.gprod.mediaio.interfaces.repositories.user.SubscribeCallback;
 import com.gprod.mediaio.interfaces.repositories.user.UnsubscribeCallback;
 import com.gprod.mediaio.interfaces.services.database.DeletingPostCallback;
-import com.gprod.mediaio.interfaces.services.story.AddingStoryCallback;
+import com.gprod.mediaio.interfaces.services.nfc.ShareNfcCallback;
 import com.gprod.mediaio.models.post.Post;
-import com.gprod.mediaio.models.story.ImageStory;
 import com.gprod.mediaio.models.user.User;
 import com.gprod.mediaio.models.profile.ProfileEditItem;
 import com.gprod.mediaio.models.profile.ProfileInfoItem;
@@ -50,8 +48,8 @@ import com.gprod.mediaio.models.profile.ProfileItem;
 import com.gprod.mediaio.models.profile.ProfilePostListItem;
 import com.gprod.mediaio.models.profile.ProfileSubscribeItem;
 import com.gprod.mediaio.models.profile.ProfileUnsubscribeItem;
-import com.gprod.mediaio.repositories.StoryRepository;
 import com.gprod.mediaio.services.popup.loading.LoadingPopup;
+import com.gprod.mediaio.services.popup.nfc.NfcSharingPopup;
 import com.gprod.mediaio.services.popup.notification.NotificationPopup;
 
 import java.util.ArrayList;
@@ -122,6 +120,7 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 onBackPressedCallback.remove();
+                getActivity().findViewById(R.id.nav_view).setVisibility(View.GONE);
                 navController.navigate(R.id.edit_profile_fragment);
             }
         };
@@ -207,6 +206,14 @@ public class ProfileFragment extends Fragment {
                 });
             }
         };
+        ShareProfileListener shareProfileListener = new ShareProfileListener() {
+            @Override
+            public void onShare(ShareProfileTypes shareProfileType) {
+                if(shareProfileType == ShareProfileTypes.SHARE_TYPE_QR){
+                    navController.navigate(R.id.qrCodeFragment);
+                }
+            }
+        };
         profileItemListAdapter = new ProfileItemsListAdapter(getContext(),profileItems);
         postListLiveData.observe(getViewLifecycleOwner(), new Observer<ArrayList<Post>>() {
             @Override
@@ -257,7 +264,7 @@ public class ProfileFragment extends Fragment {
             public void onChanged(ProfileTypes profileTypes) {
                 ProfileItem profileItem;
                 if(profileTypes == ProfileTypes.SELF_PROFILE){
-                    profileItem = new ProfileEditItem(editProfileClickListener);
+                    profileItem = new ProfileEditItem(editProfileClickListener,shareProfileListener);
                 }
                 else if(profileTypes == ProfileTypes.OTHER_USER_PROFILE) {
                     navView.setVisibility(View.GONE);
@@ -269,15 +276,17 @@ public class ProfileFragment extends Fragment {
                     }
                 }
                 else {
-                    profileItem = new ProfileEditItem(editProfileClickListener);
+                    profileItem = new ProfileEditItem(editProfileClickListener,shareProfileListener);
                 }
                 int markupIndex = getMarkupIndex(profileItem);
                 Log.d("MY LOGS","Markup index >>: " + markupIndex);
-                if(profileItems.size() > markupIndex){
-                    profileItems.add(markupIndex,profileItem);
-                }
-                if(profileItems.size() <= markupIndex){
-                    profileItems.add(profileItem);
+                if(!containsEditItem(profileItems)) {
+                    if (profileItems.size() > markupIndex) {
+                        profileItems.add(markupIndex, profileItem);
+                    }
+                    if (profileItems.size() <= markupIndex) {
+                        profileItems.add(profileItem);
+                    }
                 }
                 profileItemListAdapter.setProfileItems(profileItems);
                 profileItemListAdapter.notifyDataSetChanged();
@@ -305,5 +314,13 @@ public class ProfileFragment extends Fragment {
             markupIndex = Integer.parseInt(getResources().getString(R.string.profile_markup_unsubscribe_item_index));
         }
         return markupIndex;
+    }
+    public boolean containsEditItem(ArrayList<ProfileItem> profileItems) {
+        for(ProfileItem item : profileItems){
+            if(item instanceof ProfileEditItem){
+                return true;
+            }
+        }
+        return false;
     }
 }

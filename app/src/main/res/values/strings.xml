@@ -43,6 +43,7 @@
     <string name="title_edit_profile_photo">Изменить фотографию профиля</string>
     <string name="navigation_add_dialog_post_title">Добавить Пост</string>
     <string name="navigation_add_dialog_story_title">Записать Историю</string>
+    <string name="navigation_add_dialog_scan_qr_title">Сканировать Qr</string>
     <string name="choose_image_source_dialog_camera_title">Сделать фото</string>
     <string name="choose_image_source_dialog_gallery_title">Выбрать из галлереи</string>
     <string name="choose_image_dialog_title">Выберите изображение</string>
@@ -50,6 +51,7 @@
     <string name="hint_title_edit_description">Описание</string>
     <string name="button_title_add_post">Опубликовать</string>
     <string name="title_default_like_count">0</string>
+    <string name="title_bring_phone">Поднесите свой телефон к qr коду</string>
     <string name="title_default_comments_count">0</string>
     <string name="title_default_tag_view_count">0</string>
     <string name="title_add_comment">Добавить комментарий</string>
@@ -58,6 +60,7 @@
     <string name="temp_photo_bundle_key">tempPhotoBundleKey</string>
     <string name="temp_photo_name">tempResult.jpg</string>
     <string name="temp_video_name">tempVideo.</string>
+    <string name="temp_qr_name">tempQr.jpg</string>
     <string name="error_taking_photo_title">Не удалось сделать снимок</string>
     <string name="profile_posts_span_count">3</string>
     <string name="error_permissions_not_granted_title">Пожалуйста предоставьте приложению разрешения для корректной работы</string>
@@ -74,4 +77,6 @@
     <string name="story_timer_tick">100</string>
     <string name="story_api_url"> https://great-accepted-muskrat.ngrok-free.app</string>
     <string name="day_in_unix">86400</string>
+    <string name="nfc_sharing_tag">!PostrIdSharingTag!</string>
+    <string name="qr_sharing_tag">!ostrProifleIdSharing!</string>
 </resources>

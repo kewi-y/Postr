@@ -35,6 +35,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
 import com.gprod.mediaio.R;
 import com.gprod.mediaio.adapters.AttachedImageListAdapter;
+import com.gprod.mediaio.interfaces.adapters.DetachImageListener;
 import com.gprod.mediaio.interfaces.adapters.OnSelectImageListener;
 import com.gprod.mediaio.interfaces.dialogs.imageSourceDialog.ChooseImageSourceDialogCallback;
 import com.gprod.mediaio.interfaces.services.database.WritingPostCallback;
@@ -55,11 +56,9 @@ public class AddImagePostFragment extends Fragment {
     private EditText descriptionEditText;
     private MaterialButton addPostButton;
     private ImageButton addImageButton;
-    private LiveData<Bitmap> postImageData;
     private RecyclerView attachedImageListView;
     private LiveData<ArrayList<Bitmap>> attachedImageListLiveData;
     private LiveData<ArrayList<String>> galleryImageListLiveData;
-    private Uri cameraImageUri;
     private ChooseImageSourceDialog chooseImageSourceDialog;
     private AttachedImageListAdapter attachedImageListAdapter;
     private PickImageDialog pickImageDialog;
@@ -120,6 +119,12 @@ public class AddImagePostFragment extends Fragment {
                 }
             }
         };
+        DetachImageListener detachImageListener = new DetachImageListener() {
+            @Override
+            public void onDetach(Bitmap image) {
+                viewModel.detachImage(image);
+            }
+        };
         pickImageDialog.setOnSelectImageListener(onSelectImageListener);
         attachedImageListLiveData.observe(getViewLifecycleOwner(), new Observer<ArrayList<Bitmap>>() {
             @Override
@@ -127,6 +132,7 @@ public class AddImagePostFragment extends Fragment {
                 if(attachedImageListAdapter == null){
                     attachedImageListAdapter = new AttachedImageListAdapter(getContext(),images);
                     attachedImageListView.setAdapter(attachedImageListAdapter);
+                    attachedImageListAdapter.setDetachImageListener(detachImageListener);
                 }
                 else {
                     attachedImageListAdapter.updateAttachedImageList(images);
@@ -145,7 +151,7 @@ public class AddImagePostFragment extends Fragment {
                 chooseImageSourceDialog.show(new ChooseImageSourceDialogCallback() {
                     @Override
                     public void onChooseCamera() {
-                        navController.navigate(R.id.action_add_image_post_fragment_to_image_camera_fragment);
+                        navController.navigate(R.id.image_camera_fragment);
                     }
 
                     @Override

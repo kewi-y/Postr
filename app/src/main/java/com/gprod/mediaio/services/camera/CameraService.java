@@ -1,50 +1,52 @@
 package com.gprod.mediaio.services.camera;
 
 import android.annotation.SuppressLint;
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.media.MediaActionSound;
+import android.media.Image;
 import android.net.Uri;
-import android.os.Environment;
-import android.os.FileUtils;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.OrientationEventListener;
+import android.view.Surface;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.camera.core.CameraProvider;
 import androidx.camera.core.CameraSelector;
+import androidx.camera.core.ImageAnalysis;
 import androidx.camera.core.ImageCapture;
 import androidx.camera.core.ImageCaptureException;
 import androidx.camera.core.ImageProxy;
 import androidx.camera.core.Preview;
 import androidx.camera.core.VideoCapture;
 import androidx.camera.lifecycle.ProcessCameraProvider;
-import androidx.camera.video.Quality;
-import androidx.camera.video.QualitySelector;
-import androidx.camera.video.Recorder;
 import androidx.camera.view.PreviewView;
-import androidx.camera.view.video.OutputFileOptions;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LifecycleOwner;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.mlkit.vision.barcode.BarcodeScanner;
+import com.google.mlkit.vision.barcode.BarcodeScannerOptions;
+import com.google.mlkit.vision.barcode.BarcodeScanning;
+import com.google.mlkit.vision.barcode.common.Barcode;
+import com.google.mlkit.vision.common.InputImage;
 import com.gprod.mediaio.R;
 import com.gprod.mediaio.interfaces.services.camera.CaptureVideoCallback;
+import com.gprod.mediaio.interfaces.services.camera.QrScanningCallback;
 import com.gprod.mediaio.interfaces.services.camera.TakingPhotoCallback;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
 
 public class CameraService {
     private ListenableFuture<ProcessCameraProvider> cameraProviderFuture;
@@ -52,6 +54,11 @@ public class CameraService {
     private Preview preview;
     private ImageCapture imageCapture;
     private VideoCapture videoCapture;
+    private ImageAnalysis imageQrAnalysis;
+    private ProcessCameraProvider cameraProvider;
+    private BarcodeScannerOptions scannerOptions;
+    private BarcodeScanner barcodeScanner;
+    private int cameraSelectorData;
     public static CameraService getInstance(Context context) {
         if(instance == null) {
             instance = new CameraService(context);
@@ -61,8 +68,29 @@ public class CameraService {
     @SuppressLint("RestrictedApi")
     private CameraService(Context context){
         cameraProviderFuture = ProcessCameraProvider.getInstance(context);
+        cameraSelectorData = CameraSelector.LENS_FACING_FRONT;
         imageCapture = new ImageCapture.Builder().setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY).build();
         videoCapture = new VideoCapture.Builder().setVideoFrameRate(60).build();
+        imageQrAnalysis = new ImageAnalysis.Builder().build();
+        scannerOptions = new BarcodeScannerOptions.Builder().setBarcodeFormats(Barcode.FORMAT_QR_CODE).build();
+        OrientationEventListener orientationEventListener = new OrientationEventListener(context) {
+            @Override
+            public void onOrientationChanged(int orientation) {
+                int rotation;
+                if (orientation >= 45 && orientation < 135) {
+                    rotation = Surface.ROTATION_270;
+                } else if (orientation >= 135 && orientation < 225) {
+                    rotation = Surface.ROTATION_180;
+                } else if (orientation >= 225 && orientation < 315) {
+                    rotation = Surface.ROTATION_90;
+                } else {
+                    rotation = Surface.ROTATION_0;
+                }
+
+                imageCapture.setTargetRotation(rotation);
+            }
+        };
+        orientationEventListener.enable();
     }
 
     public void startCamera(Context context,PreviewView previewView,LifecycleOwner owner){
@@ -72,9 +100,9 @@ public class CameraService {
             @Override
             public void run() {
                 try {
-                    ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
+                    cameraProvider = cameraProviderFuture.get();
                     cameraProvider.unbindAll();
-                    CameraSelector cameraSelector = new CameraSelector.Builder().requireLensFacing(CameraSelector.LENS_FACING_FRONT).build();
+                    CameraSelector cameraSelector = new CameraSelector.Builder().requireLensFacing(cameraSelectorData).build();
                     cameraProvider.bindToLifecycle(owner,cameraSelector,preview,imageCapture,videoCapture);
                 } catch (ExecutionException e) {
                     throw new RuntimeException(e);
@@ -83,6 +111,64 @@ public class CameraService {
                 }
             }
         }, ContextCompat.getMainExecutor(context));
+    }
+    public void startCameraWithQrAnalyzer(Context context, PreviewView previewView, LifecycleOwner owner, QrScanningCallback qrScanningCallback){
+        preview = new Preview.Builder().build();
+        preview.setSurfaceProvider(previewView.getSurfaceProvider());
+        barcodeScanner = BarcodeScanning.getClient(scannerOptions);
+        String qrSharingTag = context.getResources().getString(R.string.qr_sharing_tag);
+
+        imageQrAnalysis.setAnalyzer(ContextCompat.getMainExecutor(context), new ImageAnalysis.Analyzer() {
+            @SuppressLint("UnsafeOptInUsageError")
+            @Override
+            public void analyze(@NonNull ImageProxy imageProxy) {
+                if(imageProxy.getImage() != null){
+                    InputImage inputImage = InputImage.fromMediaImage(imageProxy.getImage(),imageProxy.getImageInfo().getRotationDegrees());
+                    barcodeScanner.process(inputImage).addOnSuccessListener(new OnSuccessListener<List<Barcode>>() {
+                        @Override
+                        public void onSuccess(List<Barcode> barcodes) {
+                            if(barcodes.size() > 0){
+                                Barcode barcode = barcodes.get(0);
+                                String barcodeContent = new String(barcode.getRawBytes(),StandardCharsets.UTF_8);
+                                if(barcodeContent.contains(qrSharingTag)){
+                                    barcodeContent = barcodeContent.replaceAll(qrSharingTag,"");
+                                    qrScanningCallback.onScanned(barcodeContent);
+                                    Log.d("MY LOGS", "scanned user >>: " + barcodeContent);
+                                    barcodeScanner.close();
+                                }
+
+                            }
+                        }
+                    }).addOnCompleteListener(new OnCompleteListener<List<Barcode>>() {
+                        @Override
+                        public void onComplete(@NonNull Task<List<Barcode>> task) {
+                            imageProxy.close();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            qrScanningCallback.onFailure();
+                        }
+                    });
+                }
+            }
+        });
+        cameraProviderFuture.addListener(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    cameraProvider = cameraProviderFuture.get();
+                    cameraProvider.unbindAll();
+                    CameraSelector cameraSelector = new CameraSelector.Builder().requireLensFacing(CameraSelector.LENS_FACING_BACK).build();
+                    cameraProvider.bindToLifecycle(owner,cameraSelector,preview, imageQrAnalysis);
+                } catch (ExecutionException e) {
+                    throw new RuntimeException(e);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        },ContextCompat.getMainExecutor(context));
+
     }
 
     public void takePhoto(Context context,TakingPhotoCallback takingPhotoCallback){
@@ -96,6 +182,7 @@ public class CameraService {
                         Bitmap resultImage = MediaStore.Images.Media.getBitmap(context.getContentResolver(), Uri.fromFile(tempPhotoFile));
                         takingPhotoCallback.onTaken(resultImage);
                         tempPhotoFile.delete();
+
                     }
                 } catch (IOException e) {
                     takingPhotoCallback.onFailure();
@@ -140,5 +227,19 @@ public class CameraService {
     @SuppressLint("RestrictedApi")
     public void stopRecording(){
         videoCapture.stopRecording();
+    }
+    public void flipCamera(LifecycleOwner lifecycleOwner){
+        CameraSelector cameraSelector;
+        if(cameraProvider != null && preview != null){
+            if(cameraSelectorData == CameraSelector.LENS_FACING_FRONT){
+                cameraSelectorData = CameraSelector.LENS_FACING_BACK;
+            }
+            else if(cameraSelectorData == CameraSelector.LENS_FACING_BACK){
+                cameraSelectorData = CameraSelector.LENS_FACING_FRONT;
+            }
+            cameraProvider.unbindAll();
+            cameraSelector = new CameraSelector.Builder().requireLensFacing(cameraSelectorData).build();
+            cameraProvider.bindToLifecycle(lifecycleOwner,cameraSelector,preview);
+        }
     }
 }

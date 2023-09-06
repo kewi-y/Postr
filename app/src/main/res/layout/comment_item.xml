@@ -4,6 +4,7 @@
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
+    android:layout_marginBottom="10dp"
     android:background="@drawable/cropped_primary_color_variant_background"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">

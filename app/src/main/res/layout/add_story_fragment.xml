@@ -22,6 +22,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <ImageView
+        android:id="@+id/flipCameraImageView"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:src="@drawable/ic_flip_camera"
+        app:layout_constraintBottom_toBottomOf="@+id/cameraModeSelectorTabLayout"
+        app:layout_constraintEnd_toStartOf="@+id/cameraModeSelectorTabLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/cameraModeSelectorTabLayout" />
+
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/cameraModeSelectorTabLayout"
         android:layout_width="145dp"

@@ -11,4 +11,8 @@
         android:icon="@drawable/ic_playcircle"
         android:iconTint="?attr/colorOnPrimary"
         android:title="@string/navigation_add_dialog_story_title"/>
+    <item
+        android:id="@+id/scanQrMenuItem"
+        android:title="@string/navigation_add_dialog_scan_qr_title"
+        />
 </menu>

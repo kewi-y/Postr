@@ -25,4 +25,14 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/flipCameraImageView"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:src="@drawable/ic_flip_camera"
+        app:layout_constraintBottom_toBottomOf="@+id/takePhotoButton"
+        app:layout_constraintEnd_toStartOf="@+id/takePhotoButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/takePhotoButton" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -168,7 +168,8 @@ public class ImageProcessingFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 viewModel.saveChanges(getContext());
-                navController.navigate(R.id.add_image_post_fragment);
+                navController.popBackStack(R.id.image_camera_fragment,false);
+                navController.popBackStack();
             }
         });
         return root;

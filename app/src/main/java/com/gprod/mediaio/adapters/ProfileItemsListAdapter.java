@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,6 +15,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.material.button.MaterialButton;
 import com.gprod.mediaio.R;
 import com.gprod.mediaio.enums.profile.ProfileItemTypes;
+import com.gprod.mediaio.enums.profile.ShareProfileTypes;
 import com.gprod.mediaio.interfaces.adapters.ProfileItemViewTypes;
 import com.gprod.mediaio.models.user.User;
 import com.gprod.mediaio.models.profile.ProfileEditItem;
@@ -98,7 +100,7 @@ public class ProfileItemsListAdapter extends RecyclerView.Adapter<ProfileItemsLi
             ((ProfileInfoItemHolder) holder).setData(((ProfileInfoItem) profileItem).getUser());
         }
         if(holder instanceof ProfileEditItemHolder){
-            ((ProfileEditItemHolder) holder).setClickListener(((ProfileEditItem) profileItem).getClickListener());
+            ((ProfileEditItemHolder) holder).setData((ProfileEditItem) profileItem);
         }
         if(holder instanceof ProfileSubscribeItemHolder){
             ((ProfileSubscribeItemHolder) holder).setClickListener(((ProfileSubscribeItem) profileItem).getOnClickListener());
@@ -163,12 +165,22 @@ public class ProfileItemsListAdapter extends RecyclerView.Adapter<ProfileItemsLi
 
     class ProfileEditItemHolder extends ProfileItemHolder{
         private MaterialButton editProfileButton;
+        private ImageView shareProfileButton;
         public ProfileEditItemHolder(@NonNull View itemView) {
             super(itemView);
             editProfileButton = itemView.findViewById(R.id.editProfileButton);
+            shareProfileButton = itemView.findViewById(R.id.shareProfileImageButton);
         }
-        public void setClickListener(View.OnClickListener onClickListener){
-            editProfileButton.setOnClickListener(onClickListener);
+        public void setData(ProfileEditItem profileEditItem){
+            editProfileButton.setOnClickListener(profileEditItem.getClickListener());
+            if(profileEditItem.getShareProfileListener() != null){
+                shareProfileButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        profileEditItem.getShareProfileListener().onShare(ShareProfileTypes.SHARE_TYPE_QR);
+                    }
+                });
+            }
         }
     }
     class ProfileSubscribeItemHolder extends ProfileItemHolder{

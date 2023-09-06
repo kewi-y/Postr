@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import com.gprod.mediaio.R;
 import com.gprod.mediaio.interfaces.services.camera.TakingPhotoCallback;
@@ -26,6 +27,7 @@ public class ImageCameraFragment extends Fragment {
     private ImageCameraViewModel viewModel;
     private ImageButton takePhotoButton;
     private PreviewView previewView;
+    private ImageView flipCameraView;
     private NavController navController;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -36,6 +38,7 @@ public class ImageCameraFragment extends Fragment {
         navController = navHostFragment.getNavController();
         takePhotoButton = root.findViewById(R.id.takePhotoButton);
         previewView = root.findViewById(R.id.imageCameraPreviewView);
+        flipCameraView = root.findViewById(R.id.flipCameraImageView);
         if(viewModel.requestPermissions(getContext())) {
             viewModel.initCamera(getContext(), getViewLifecycleOwner(), previewView);
             takePhotoButton.setOnClickListener(new View.OnClickListener() {
@@ -57,6 +60,12 @@ public class ImageCameraFragment extends Fragment {
         else {
             navController.navigate(R.id.navigation_home);
         }
+        flipCameraView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                viewModel.flipCamera(getViewLifecycleOwner());
+            }
+        });
         return root;
     }
 }

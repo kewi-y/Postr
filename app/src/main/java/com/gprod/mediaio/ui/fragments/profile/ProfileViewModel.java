@@ -1,24 +1,31 @@
 package com.gprod.mediaio.ui.fragments.profile;
 
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.google.firebase.firestore.core.ActivityScope;
+import com.google.zxing.WriterException;
 import com.gprod.mediaio.enums.profile.ProfileTypes;
 import com.gprod.mediaio.interfaces.repositories.user.SubscribeCallback;
 import com.gprod.mediaio.interfaces.repositories.user.UnsubscribeCallback;
 import com.gprod.mediaio.interfaces.services.database.DeletingPostCallback;
 import com.gprod.mediaio.interfaces.services.database.GettingPostListCallback;
 import com.gprod.mediaio.interfaces.services.database.UpdatingUserCallback;
+import com.gprod.mediaio.interfaces.services.nfc.ShareNfcCallback;
 import com.gprod.mediaio.models.post.Post;
 import com.gprod.mediaio.models.user.User;
 import com.gprod.mediaio.repositories.PostRepository;
+import com.gprod.mediaio.repositories.QrCodeRepository;
 import com.gprod.mediaio.repositories.SelectedPostRepository;
 import com.gprod.mediaio.repositories.SelectedUserRepository;
 import com.gprod.mediaio.repositories.UserRepository;
+import com.gprod.mediaio.services.nfc.NfcService;
 import com.gprod.mediaio.services.popup.loading.LoadingPopup;
 
 import java.util.ArrayList;
@@ -28,6 +35,7 @@ public class ProfileViewModel extends ViewModel {
     private PostRepository postRepository;
     private SelectedPostRepository selectedPostRepository;
     private SelectedUserRepository selectedUserRepository;
+    private QrCodeRepository qrCodeRepository;
     private MutableLiveData<User> userLiveData = new MutableLiveData<>();
     private MutableLiveData<ArrayList<Post>> postListLiveData = new MutableLiveData<>();
     private MutableLiveData<ProfileTypes> profileTypeLifeData = new MutableLiveData<>();
@@ -37,6 +45,7 @@ public class ProfileViewModel extends ViewModel {
         postRepository = PostRepository.getInstance();
         selectedPostRepository = SelectedPostRepository.getInstance();
         selectedUserRepository = SelectedUserRepository.getInstance();
+        qrCodeRepository = QrCodeRepository.getInstance();
     }
     public LiveData<User> getUserLiveData(){
         return userLiveData;

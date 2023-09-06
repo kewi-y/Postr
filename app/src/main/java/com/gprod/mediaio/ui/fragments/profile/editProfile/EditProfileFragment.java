@@ -1,5 +1,6 @@
 package com.gprod.mediaio.ui.fragments.profile.editProfile;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -63,6 +64,16 @@ public class EditProfileFragment extends Fragment {
         chooseImageSourceDialog = ChooseImageSourceDialog.getInstance(getActivity());
         navHostFragment = (NavHostFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_activity_main);
         navController = navHostFragment.getNavController();
+        OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                getActivity().findViewById(R.id.nav_view).setVisibility(View.VISIBLE);
+                navController.popBackStack();
+
+                this.remove();
+            }
+        };
+        getActivity().getOnBackPressedDispatcher().addCallback(onBackPressedCallback);
         userLiveData.observe(getViewLifecycleOwner(), new Observer<User>() {
             @Override
             public void onChanged(User user) {
@@ -91,6 +102,7 @@ public class EditProfileFragment extends Fragment {
                         @Override
                         public void onSuccess(User updatedUser) {
                             LoadingPopup.hide(getContext());
+                            onBackPressedCallback.remove();
                             navController.navigate(R.id.navigation_profile);
                         }
 
@@ -110,6 +122,7 @@ public class EditProfileFragment extends Fragment {
                 chooseImageSourceDialog.show(new ChooseImageSourceDialogCallback() {
                     @Override
                     public void onChooseCamera(){
+                        onBackPressedCallback.remove();
                         navController.navigate(R.id.image_camera_fragment);
                     }
                     @Override
@@ -122,6 +135,7 @@ public class EditProfileFragment extends Fragment {
         logOutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                onBackPressedCallback.remove();
                 viewModel.exitFromAccount();
                 navController.navigate(R.id.action_global_authFragment);
                 BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.nav_view);

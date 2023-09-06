@@ -38,6 +38,9 @@ public class NavigationAddDialog {
                     case R.id.addStoryMenuItem:
                         navigationAddDialogCallback.onSelectStory();
                         return true;
+                    case R.id.scanQrMenuItem:
+                        navigationAddDialogCallback.onSelectedQr();
+                        return true;
                     default:
                         return false;
                 }

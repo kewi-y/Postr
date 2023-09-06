@@ -36,18 +36,33 @@ public class EditProfileViewModel extends ViewModel {
         }
     }
     public void updateUserInfo(String username, String profilename, String bio, UpdatingUserCallback updatingUserCallback){
-        userRepository.checkProfilenameForUnique(profilename, new CheckingForUniqueCallback() {
-            @Override
-            public void isUnique() {
-                updateUser(username,profilename,bio,updatingUserCallback);
-            }
+        if(!userRepository.getUser().getProfilename().equals(profilename)) {
+            userRepository.checkProfilenameForUnique(profilename, new CheckingForUniqueCallback() {
+                @Override
+                public void isUnique() {
+                    updateUser(username, profilename, bio, updatingUserCallback);
+                }
 
-            @Override
-            public void isNotUnique() {
-                updatingUserCallback.onFailure("Этот тэг уже занят");
-                //TODO: migrate error text to resources
-            }
-        });
+                @Override
+                public void isNotUnique() {
+                    updatingUserCallback.onFailure("Этот тэг уже занят");
+                    //TODO: migrate error text to resources
+                }
+            });
+        }
+        else {
+            updateUser(username, profilename, bio, new UpdatingUserCallback() {
+                @Override
+                public void onSuccess(User updatedUser) {
+                    updatingUserCallback.onSuccess(updatedUser);
+                }
+
+                @Override
+                public void onFailure(String textError) {
+                    updatingUserCallback.onFailure(textError);
+                }
+            });
+        }
      }
 
 

@@ -95,6 +95,10 @@ public class AddImagePostViewModel extends ViewModel {
     public void clearAttachedImageList(){
         tempPhotoRepository.clearAttachedImageList();
     }
+    public void detachImage(Bitmap image){
+        tempPhotoRepository.detachImage(image);
+        attachedImageListLiveData.setValue(tempPhotoRepository.getAttachedImageList());
+    }
     public void loadGalleryImageList(Context context){
         if(galleryImageList.size() > 0){
             galleryImageList.clear();

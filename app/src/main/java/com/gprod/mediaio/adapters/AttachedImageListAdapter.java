@@ -12,12 +12,14 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.gprod.mediaio.R;
+import com.gprod.mediaio.interfaces.adapters.DetachImageListener;
 
 import java.util.ArrayList;
 
 public class AttachedImageListAdapter extends RecyclerView.Adapter<AttachedImageListAdapter.AttachedImageHolder> {
     private ArrayList<Bitmap> attachedImageList;
     private LayoutInflater inflater;
+    private DetachImageListener detachImageListener;
 
     public AttachedImageListAdapter(Context context, ArrayList<Bitmap> attachedImageList){
         this.attachedImageList = attachedImageList;
@@ -26,6 +28,9 @@ public class AttachedImageListAdapter extends RecyclerView.Adapter<AttachedImage
     public void updateAttachedImageList(ArrayList<Bitmap> attachedImageList){
         this.attachedImageList = attachedImageList;
         notifyDataSetChanged();
+    }
+    public void setDetachImageListener(DetachImageListener detachImageListener){
+        this.detachImageListener = detachImageListener;
     }
 
     @NonNull
@@ -46,13 +51,22 @@ public class AttachedImageListAdapter extends RecyclerView.Adapter<AttachedImage
         return attachedImageList.size();
     }
     class AttachedImageHolder extends RecyclerView.ViewHolder{
-        ImageView attachedImagePreviewView;
+        ImageView attachedImagePreviewView, detachImageView;
         public AttachedImageHolder(@NonNull View itemView) {
             super(itemView);
             attachedImagePreviewView = itemView.findViewById(R.id.attachedImagePreviewView);
+            detachImageView = itemView.findViewById(R.id.detachImageImageView);
         }
         public void setData(Bitmap image){
             attachedImagePreviewView.setImageBitmap(image);
+            if(detachImageListener != null){
+                detachImageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        detachImageListener.onDetach(image);
+                    }
+                });
+            }
         }
     }
 }

@@ -19,6 +19,7 @@ import com.gprod.mediaio.models.post.PostItem;
 import com.gprod.mediaio.models.story.Story;
 import com.gprod.mediaio.models.story.StoryItem;
 import com.gprod.mediaio.models.user.User;
+import com.gprod.mediaio.repositories.NfcParsedUserRepository;
 import com.gprod.mediaio.repositories.PostRepository;
 import com.gprod.mediaio.repositories.SelectedUserRepository;
 import com.gprod.mediaio.repositories.StoryRepository;
@@ -30,16 +31,20 @@ public class HomeViewModel extends ViewModel {
     private UserRepository userRepository;
     private StoryRepository storyRepository;
     private PostRepository postRepository;
+    private NfcParsedUserRepository nfcParsedUserRepository;
     private SelectedUserRepository selectedUserRepository;
     private ArrayList<StoryItem> storyItemList = new ArrayList<>();
     private ArrayList<PostItem> postItemList = new ArrayList<>();
+    private String nfcParsedUserId = null;
 
     private MutableLiveData<ArrayList<StoryItem>>storyItemListLiveData = new MutableLiveData<>();
     private MutableLiveData<ArrayList<PostItem>> postItemListLiveData = new MutableLiveData<>();
+    private MutableLiveData<String> nfcParsedUserIdLiveData = new MutableLiveData<>();
     public HomeViewModel(){
         postRepository = PostRepository.getInstance();
         userRepository = UserRepository.getInstance();
         selectedUserRepository = SelectedUserRepository.getInstance();
+        nfcParsedUserRepository = NfcParsedUserRepository.getInstance();
     }
     public void init(String apiUri){
         storyRepository = StoryRepository.getInstance(apiUri);
@@ -52,6 +57,7 @@ public class HomeViewModel extends ViewModel {
     public LiveData<ArrayList<PostItem>> getPostItemListLiveData() {
         return postItemListLiveData;
     }
+    public LiveData<String> getNfcParsedUserIdLiveData(){return nfcParsedUserIdLiveData;}
 
     public void loadStories(){
         storyRepository.getStoryListByAuthorId(userRepository.getUser().getId(), new GettingStoryListByAuthorIdCallback() {
@@ -136,6 +142,10 @@ public class HomeViewModel extends ViewModel {
 
             }
         });
+    }
+    public void loadNfcParsedUser(){
+        nfcParsedUserIdLiveData.setValue(nfcParsedUserRepository.getUserId());
+        nfcParsedUserRepository.clearUserId();
     }
     public void addLike(Post post, UpdatingPostCallback updatingPostCallback){
         postRepository.addLike(post,userRepository.getUser(),updatingPostCallback);

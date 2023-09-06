@@ -49,7 +49,6 @@
             tools:layout="@layout/image_camera_fragment" >
             <action
                 android:id="@+id/action_image_camera_fragment_to_imageProcessingFragment"
-                app:popUpTo="@id/image_camera_fragment"
                 app:destination="@id/imageProcessingFragment" />
         </fragment>
         <fragment
@@ -89,6 +88,16 @@
             android:name="com.gprod.mediaio.ui.fragments.add.story.AddStoryFragment"
             android:label="add_story_fragment"
             tools:layout="@layout/add_story_fragment" />
+        <fragment
+            android:id="@+id/qrCodeFragment"
+            android:name="com.gprod.mediaio.ui.fragments.qr.code.QrCodeFragment"
+            android:label="qr_code_fragment"
+            tools:layout="@layout/qr_code_fragment" />
+        <fragment
+            android:id="@+id/scanQrFragment"
+            android:name="com.gprod.mediaio.ui.fragments.qr.scan.ScanQrFragment"
+            android:label="scan_qr_fragment"
+            tools:layout="@layout/scan_qr_fragment" />
     </navigation>
     <fragment
         android:id="@+id/authFragment"

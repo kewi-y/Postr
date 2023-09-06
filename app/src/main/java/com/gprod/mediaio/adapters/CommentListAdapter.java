@@ -37,7 +37,7 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
     @Override
     public void onBindViewHolder(@NonNull CommentViewHolder holder, int position) {
         Comment currentComment = commentList.get(position);
-        holder.setData(currentComment.getContent(),currentComment.getAuthorName(),currentComment.getAuthorProfilePhotoDownloadUri());
+        holder.setData(currentComment.getContent(),currentComment.getAuthorName(),currentComment.getAuthorTag(),currentComment.getAuthorProfilePhotoDownloadUri());
     }
 
     @Override
@@ -47,17 +47,19 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
 
     class CommentViewHolder extends RecyclerView.ViewHolder{
         SimpleDraweeView commentAuthorPhotoView;
-        TextView commentContextTextView,commentAuthorNameView;
+        TextView commentContentTextView,commentAuthorNameView,commentAuthorTagView;
         public CommentViewHolder(@NonNull View itemView) {
             super(itemView);
             commentAuthorPhotoView = itemView.findViewById(R.id.commentAuthorPhotoView);
-            commentContextTextView = itemView.findViewById(R.id.commentContentTextView);
+            commentContentTextView = itemView.findViewById(R.id.commentContentTextView);
             commentAuthorNameView = itemView.findViewById(R.id.commentAuthorNameView);
+            commentAuthorTagView = itemView.findViewById(R.id.commentAuthorTagView);
         }
-        public void setData(String commentContent,String commentAuthorName,String commentAuthorDownloadPhotoUri){
+        public void setData(String commentContent,String commentAuthorName,String commentAuthorTag,String commentAuthorDownloadPhotoUri){
             commentAuthorNameView.setText(commentAuthorName);
-            commentContextTextView.setText(commentContent);
+            commentContentTextView.setText(commentContent);
             commentAuthorPhotoView.setImageURI(Uri.parse(commentAuthorDownloadPhotoUri));
+            commentAuthorTagView.setText(commentAuthorTag);
         }
     }
 }

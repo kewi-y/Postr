@@ -469,7 +469,7 @@ public class FirebaseDatabaseService {
         if(commentsMapList != null) {
             for(Map commentMap : commentsMapList){
                 comments.add(new Comment((String) commentMap.get("id"),(String) commentMap.get("authorId"),
-                        (String) commentMap.get("authorName"),(String) commentMap.get("authorProfilePhotoDownloadUri"),
+                        (String) commentMap.get("authorName"),(String) commentMap.get("authorTag"),(String) commentMap.get("authorProfilePhotoDownloadUri"),
                         (String) commentMap.get("content")));
             }
         }

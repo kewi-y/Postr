@@ -43,6 +43,7 @@ public class HomeFragment extends Fragment {
     private HomeViewModel viewModel;
     private LiveData<ArrayList<StoryItem>> storyItemListLiveData;
     private LiveData<ArrayList<PostItem>> postItemListLiveData;
+    private LiveData<String> nfcParsedUserIdLiveData;
     private RecyclerView homeItemListView;
     private ArrayList<HomeItem> homeItemList;
     private HomeItemListAdapter homeItemListAdapter;
@@ -58,6 +59,7 @@ public class HomeFragment extends Fragment {
         navController = navHostFragment.getNavController();
         homeItemList = new ArrayList<>();
         postItemListLiveData = viewModel.getPostItemListLiveData();
+        nfcParsedUserIdLiveData = viewModel.getNfcParsedUserIdLiveData();
         homeItemListView = root.findViewById(R.id.homeItemListView);
         storyViewDialog = StoryViewDialog.getInstance(requireContext());
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
@@ -193,10 +195,29 @@ public class HomeFragment extends Fragment {
                 feedHomeItem.updatePostsItems(postItems);
             }
         });
+        nfcParsedUserIdLiveData.observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                if(s != null){
+                    viewModel.selectUser(s, new SelectUserCallback() {
+                        @Override
+                        public void onSelected() {
+                            navController.navigate(R.id.navigation_profile);
+                        }
+
+                        @Override
+                        public void onFailure() {
+
+                        }
+                    });
+                }
+            }
+        });
         homeItemListAdapter = new HomeItemListAdapter(getContext(), homeItemList);
         homeItemListView.setAdapter(homeItemListAdapter);
         viewModel.loadStories();
         viewModel.loadPosts(getContext(),1);
+        viewModel.loadNfcParsedUser();
         return root;
     }
 }

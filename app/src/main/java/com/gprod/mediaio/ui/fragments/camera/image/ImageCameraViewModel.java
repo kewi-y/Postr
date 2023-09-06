@@ -42,6 +42,9 @@ public class ImageCameraViewModel extends ViewModel {
         cameraService = CameraService.getInstance(context);
         cameraService.startCamera(context,previewView,owner);
     }
+    public void flipCamera(LifecycleOwner owner){
+        cameraService.flipCamera(owner);
+    }
     public void takePhoto(Context context, TakingPhotoCallback takingPhotoCallback) {
         cameraService.takePhoto(context, new TakingPhotoCallback() {
             @Override

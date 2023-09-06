@@ -1,5 +1,6 @@
 package com.gprod.mediaio.ui.fragments.add.story;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.camera.view.PreviewView;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -37,6 +38,7 @@ public class AddStoryFragment extends Fragment {
     private TabLayout cameraModeSelector;
     private CameraType cameraType;
     private NavController navController;
+    private ImageView flipCameraView;
     private ProgressBar recordingStoryProgressBar;
     private boolean isRecording = false;
 
@@ -53,6 +55,16 @@ public class AddStoryFragment extends Fragment {
         cameraPreview = root.findViewById(R.id.addStoryCameraPreview);
         cameraModeSelector = root.findViewById(R.id.cameraModeSelectorTabLayout);
         recordingStoryProgressBar = root.findViewById(R.id.recordingStoryProgressBar);
+        flipCameraView = root.findViewById(R.id.flipCameraImageView);
+        OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                getActivity().findViewById(R.id.nav_view).setVisibility(View.VISIBLE);
+                navController.popBackStack();
+                this.remove();
+            }
+        };
+        getActivity().getOnBackPressedDispatcher().addCallback(onBackPressedCallback);
         if(viewModel.checkPermission(getContext())){
             viewModel.startCamera(getContext(),cameraPreview,getViewLifecycleOwner());
         }
@@ -166,6 +178,12 @@ public class AddStoryFragment extends Fragment {
                         });
                     }
                 }
+            }
+        });
+        flipCameraView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                viewModel.flipCamera(getViewLifecycleOwner());
             }
         });
         return root;

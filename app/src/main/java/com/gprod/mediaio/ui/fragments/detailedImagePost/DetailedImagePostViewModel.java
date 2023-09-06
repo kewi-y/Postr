@@ -13,6 +13,7 @@ import com.gprod.mediaio.interfaces.services.database.UpdatingPostCallback;
 import com.gprod.mediaio.interfaces.services.database.UpdatingUserCallback;
 import com.gprod.mediaio.models.post.ImagePost;
 import com.gprod.mediaio.models.post.Post;
+import com.gprod.mediaio.models.post.PostItem;
 import com.gprod.mediaio.models.user.User;
 import com.gprod.mediaio.models.post.Tag;
 import com.gprod.mediaio.repositories.PostRepository;
@@ -21,10 +22,15 @@ import com.gprod.mediaio.repositories.SelectedTagRepository;
 import com.gprod.mediaio.repositories.SelectedUserRepository;
 import com.gprod.mediaio.repositories.UserRepository;
 
+import java.util.ArrayList;
+
 public class DetailedImagePostViewModel extends ViewModel {
     private MutableLiveData<User> authorLiveData= new MutableLiveData<>();
     private MutableLiveData<ImagePost> postLiveData = new MutableLiveData<>();
     private MutableLiveData<Boolean> userLikeLiveData = new MutableLiveData<>();
+    private MutableLiveData<ArrayList<PostItem>> postItemListLiveData = new MutableLiveData<>();
+    private ArrayList<PostItem> postItemList = new ArrayList<>();
+    private PostItem postItem;
     private SelectedPostRepository selectedPostRepository;
     private SelectedTagRepository selectedTagRepository;
     private UserRepository userRepository;
@@ -42,19 +48,33 @@ public class DetailedImagePostViewModel extends ViewModel {
         return postLiveData;
     }
     public LiveData<Boolean> getUserLikeLiveData(){ return userLikeLiveData; }
-
+    public LiveData<ArrayList<PostItem>> getPostItemListLiveData(){
+        return postItemListLiveData;
+    }
 
     public void loadData(){
-        getPostData(new GettingPostByIdCallback() {
+        postRepository.getPostById(selectedPostRepository.getSelectedPost().getPostId(), new GettingPostByIdCallback() {
             @Override
             public void onSuccess(Post post) {
-                checkOnLike();
-                getPostAuthorData(post);
-            }
+                userRepository.getUserByID(post.getAuthorId(), new GettingUserByIdCallback() {
+                    @Override
+                    public void onSuccess(User user) {
+                        postItem = new PostItem(post,user.getUsername(),user.getProfilename(),user.getProfilePhotoDownloadUri(),
+                                checkOnLike(),checkOnFavorites());
+                        postItemList.clear();
+                        postItemList.add(postItem);
+                        postItemListLiveData.setValue(postItemList);
+                    }
 
+                    @Override
+                    public void onFailure() {
+
+                    }
+                });
+            }
             @Override
             public void onFailure() {
-                //TODO: Notify user
+
             }
         });
     }
@@ -88,17 +108,17 @@ public class DetailedImagePostViewModel extends ViewModel {
 
     }
 
-   public void checkOnLike(){
+   public boolean checkOnLike(){
         if(selectedPostRepository.getSelectedPost().getLikes() != null){
             if(selectedPostRepository.getSelectedPost().getLikes().contains(userRepository.getUser().getId())){
-                userLikeLiveData.setValue(true);
+                return true;
             }
             else{
-                userLikeLiveData.setValue(false);
+                return false;
             }
         }
         else {
-            userLikeLiveData.setValue(false);
+            return false;
         }
     }
     public boolean checkOnFavorites(){
@@ -109,58 +129,92 @@ public class DetailedImagePostViewModel extends ViewModel {
             return false;
         }
     }
-    public void addLike(UpdatingPostCallback updatingPostCallback){
+    public void addLike(){
         Post updatablePost = selectedPostRepository.getSelectedPost();
         postRepository.addLike(updatablePost, userRepository.getUser(), new UpdatingPostCallback() {
             @Override
             public void onSuccess(Post post) {
-                postLiveData.setValue((ImagePost) post);
-                updatingPostCallback.onSuccess(post);
+                postItem.setOnLike(true);
+                postItem.setPost(post);
+                postItemList.clear();
+                postItemList.add(postItem);
+                postItemListLiveData.setValue(postItemList);
             }
 
             @Override
             public void onFailure() {
-                updatingPostCallback.onFailure();
+
             }
         });
     }
 
-    public void removeLike(UpdatingPostCallback updatingPostCallback){
+    public void removeLike(){
         Post updatablePost = selectedPostRepository.getSelectedPost();
         postRepository.removeLike(updatablePost, userRepository.getUser(), new UpdatingPostCallback() {
             @Override
             public void onSuccess(Post post) {
-                postLiveData.setValue((ImagePost) post);
-                updatingPostCallback.onSuccess(post);
+                postItem.setOnLike(false);
+                postItem.setPost(post);
+                postItemList.clear();
+                postItemList.add(postItem);
+                postItemListLiveData.setValue(postItemList);
             }
 
             @Override
             public void onFailure() {
-                updatingPostCallback.onFailure();
+
             }
         });
     }
 
-    public void addComment(String commentContent,UpdatingPostCallback updatingPostCallback){
+    public void addComment(String commentContent){
         Post updatablePost = selectedPostRepository.getSelectedPost();
         postRepository.addComment(updatablePost, userRepository.getUser(), commentContent, new UpdatingPostCallback() {
             @Override
             public void onSuccess(Post post) {
-                postLiveData.setValue((ImagePost) post);
-                updatingPostCallback.onSuccess(post);
+                postItem.setPost(post);
+                postItemList.clear();
+                postItemList.add(postItem);
+                postItemListLiveData.setValue(postItemList);
             }
 
             @Override
             public void onFailure() {
-                updatingPostCallback.onFailure();
+
             }
         });
     }
-    public void addPostToFavorites(UpdatingUserCallback updatingUserCallback){
-        userRepository.addPostToFavorites(selectedPostRepository.getSelectedPost(),updatingUserCallback);
+    public void addPostToFavorites(){
+        userRepository.addPostToFavorites(selectedPostRepository.getSelectedPost(), new UpdatingUserCallback() {
+            @Override
+            public void onSuccess(User updatedUser) {
+                postItem.setOnFavorites(true);
+                postItemList.clear();
+                postItemList.add(postItem);
+                postItemListLiveData.setValue(postItemList);
+            }
+
+            @Override
+            public void onFailure(String textError) {
+
+            }
+        });
     }
-    public void removePostFromFavorites(UpdatingUserCallback updatingUserCallback){
-        userRepository.removePostFromFavorites(selectedPostRepository.getSelectedPost(),updatingUserCallback);
+    public void removePostFromFavorites(){
+        userRepository.removePostFromFavorites(selectedPostRepository.getSelectedPost(), new UpdatingUserCallback() {
+            @Override
+            public void onSuccess(User updatedUser) {
+                postItem.setOnFavorites(false);
+                postItemList.clear();
+                postItemList.add(postItem);
+                postItemListLiveData.setValue(postItemList);
+            }
+
+            @Override
+            public void onFailure(String textError) {
+
+            }
+        });
     }
     public void getTagByStringTag(String tag, GettingTagByStringTagCallback gettingTagByStringTagCallback){
         postRepository.getTagByStringTag(tag,gettingTagByStringTagCallback);

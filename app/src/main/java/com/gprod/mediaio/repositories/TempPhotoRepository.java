@@ -53,6 +53,9 @@ public class TempPhotoRepository {
     public void attachImage(Bitmap image){
         attachedImageList.add(image);
     }
+    public void detachImage(Bitmap image){
+        attachedImageList.remove(image);
+    }
     public void clearAttachedImageList(){
         attachedImageList.clear();
     }
