@@ -1,9 +1,13 @@
 package com.gprod.mediaio.ui.fragments.add.story;
 
 import androidx.activity.OnBackPressedCallback;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.camera.view.PreviewView;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.Manifest;
 import android.graphics.drawable.Animatable2;
 import android.graphics.drawable.AnimatedVectorDrawable;
 import android.graphics.drawable.Drawable;
@@ -28,7 +32,10 @@ import com.gprod.mediaio.enums.camera.CameraType;
 import com.gprod.mediaio.interfaces.fragments.add.story.CapturingImageStoryCallback;
 import com.gprod.mediaio.interfaces.fragments.add.story.RecordingVideoStoryCallback;
 import com.gprod.mediaio.services.popup.loading.LoadingPopup;
+import com.gprod.mediaio.services.popup.notification.NotificationPopup;
 import com.gprod.mediaio.services.popup.progress.ProgressPopup;
+
+import java.util.Map;
 
 public class AddStoryFragment extends Fragment {
 
@@ -41,6 +48,12 @@ public class AddStoryFragment extends Fragment {
     private ImageView flipCameraView;
     private ProgressBar recordingStoryProgressBar;
     private boolean isRecording = false;
+    private final String[] PERMISSIONS = new String[]{
+            Manifest.permission.CAMERA,
+            Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE
+    };
 
 
     @Override
@@ -65,8 +78,28 @@ public class AddStoryFragment extends Fragment {
             }
         };
         getActivity().getOnBackPressedDispatcher().addCallback(onBackPressedCallback);
+        ActivityResultContracts.RequestMultiplePermissions requestMultiplePermissionsContract = new ActivityResultContracts.RequestMultiplePermissions();
+        ActivityResultLauncher<String[]> requestPermissionLauncher = registerForActivityResult(requestMultiplePermissionsContract,
+                new ActivityResultCallback<Map<String, Boolean>>() {
+            @Override
+            public void onActivityResult(Map<String, Boolean> result) {
+                if(result.get(PERMISSIONS[0]) != null && result.get(PERMISSIONS[1]) != null
+                && result.get(PERMISSIONS[2]) != null && result.get(PERMISSIONS[3]) != null){
+                    if(result.get(PERMISSIONS[0]) && result.get(PERMISSIONS[1])
+                    && result.get(PERMISSIONS[2]) && result.get(PERMISSIONS[3])){
+                        viewModel.startCamera(getContext(),cameraPreview,getViewLifecycleOwner());
+                    }
+                    else {
+                        NotificationPopup.show(getContext(),true,getResources().getString(R.string.error_permissions_not_granted_title));
+                    }
+                }
+            }
+        });
         if(viewModel.checkPermission(getContext())){
             viewModel.startCamera(getContext(),cameraPreview,getViewLifecycleOwner());
+        }
+        else {
+            requestPermissionLauncher.launch(PERMISSIONS);
         }
         cameraModeSelector.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override

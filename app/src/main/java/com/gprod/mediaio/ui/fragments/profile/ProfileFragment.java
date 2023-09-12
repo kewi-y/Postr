@@ -210,6 +210,7 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onShare(ShareProfileTypes shareProfileType) {
                 if(shareProfileType == ShareProfileTypes.SHARE_TYPE_QR){
+                    viewModel.generateQrProfile(getContext());
                     navController.navigate(R.id.qrCodeFragment);
                 }
             }

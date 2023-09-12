@@ -38,6 +38,7 @@ import com.gprod.mediaio.R;
 import com.gprod.mediaio.interfaces.services.camera.CaptureVideoCallback;
 import com.gprod.mediaio.interfaces.services.camera.QrScanningCallback;
 import com.gprod.mediaio.interfaces.services.camera.TakingPhotoCallback;
+import com.gprod.mediaio.services.popup.notification.NotificationPopup;
 
 import java.io.File;
 import java.io.IOException;
@@ -116,7 +117,7 @@ public class CameraService {
         preview = new Preview.Builder().build();
         preview.setSurfaceProvider(previewView.getSurfaceProvider());
         barcodeScanner = BarcodeScanning.getClient(scannerOptions);
-        String qrSharingTag = context.getResources().getString(R.string.qr_sharing_tag);
+        String qrSharingTag = context.getResources().getString(R.string.qr_profile_sharing_tag);
 
         imageQrAnalysis.setAnalyzer(ContextCompat.getMainExecutor(context), new ImageAnalysis.Analyzer() {
             @SuppressLint("UnsafeOptInUsageError")
@@ -133,7 +134,6 @@ public class CameraService {
                                 if(barcodeContent.contains(qrSharingTag)){
                                     barcodeContent = barcodeContent.replaceAll(qrSharingTag,"");
                                     qrScanningCallback.onScanned(barcodeContent);
-                                    Log.d("MY LOGS", "scanned user >>: " + barcodeContent);
                                     barcodeScanner.close();
                                 }
 
@@ -193,6 +193,7 @@ public class CameraService {
             @Override
             public void onError(@NonNull ImageCaptureException exception) {
                 takingPhotoCallback.onFailure();
+                exception.printStackTrace();
             }
         });
     }
@@ -214,6 +215,7 @@ public class CameraService {
                 }
                 else {
                     Log.d("MY LOGS", "file does not exists (why ???)");
+                    captureVideoCallback.onFailure();
                 }
             }
 
@@ -239,7 +241,7 @@ public class CameraService {
             }
             cameraProvider.unbindAll();
             cameraSelector = new CameraSelector.Builder().requireLensFacing(cameraSelectorData).build();
-            cameraProvider.bindToLifecycle(lifecycleOwner,cameraSelector,preview);
+            cameraProvider.bindToLifecycle(lifecycleOwner,cameraSelector,imageCapture,videoCapture,preview);
         }
     }
 }

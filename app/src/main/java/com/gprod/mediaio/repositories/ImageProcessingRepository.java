@@ -3,6 +3,7 @@ package com.gprod.mediaio.repositories;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 
 import com.gprod.mediaio.services.imageProcessing.ImageProcessorService;
 
@@ -52,6 +53,10 @@ public class ImageProcessingRepository {
     public Bitmap getActualImage(){
         return renderStack.get(renderStack.size() - renderStackIndex);
     }
-
+    public Bitmap rotateRight(){
+        outputImage = imageProcessorService.rotate(renderStack.get(renderStack.size() - renderStackIndex),90);
+        renderStack.add(outputImage);
+        return outputImage;
+    }
 
 }

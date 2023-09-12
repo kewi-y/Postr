@@ -59,6 +59,9 @@ public class ImageProcessingViewModel extends ViewModel {
         Bitmap renderedImage = imageProcessingRepository.renderHue(value);
         tempImageLiveData.setValue(renderedImage);
     }
-
+    public void rotateRight(){
+        Bitmap renderedImage = imageProcessingRepository.rotateRight();
+        tempImageLiveData.setValue(renderedImage);
+    }
 
 }

@@ -38,7 +38,7 @@ public class QrCodeFragment extends Fragment {
                 qrCodeView.setImageBitmap(bitmap);
             }
         });
-        viewModel.generateQrCode(getContext());
+        viewModel.loadQr();
         return root;
     }
 

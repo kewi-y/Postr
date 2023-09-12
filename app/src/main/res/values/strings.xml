@@ -78,5 +78,6 @@
     <string name="story_api_url"> https://great-accepted-muskrat.ngrok-free.app</string>
     <string name="day_in_unix">86400</string>
     <string name="nfc_sharing_tag">!PostrIdSharingTag!</string>
-    <string name="qr_sharing_tag">!ostrProifleIdSharing!</string>
+    <string name="qr_profile_sharing_tag">!PostrProifleIdSharing!</string>
+    <string name="title_done">👌</string>
 </resources>

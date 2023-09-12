@@ -38,7 +38,7 @@ public class ImageProcessingFragment extends Fragment {
     private BottomNavigationView imageSettingsBottomNavigationView;
     private LiveData<Bitmap> tempImageLiveData;
     private ImageSettingsTypes imageSettingsType;
-    private ImageButton acceptChangesButton,denyChangesButton,saveImageButton;
+    private ImageButton acceptChangesButton,denyChangesButton,saveImageButton,rotateImageButton;
     private NavController navController;
 
     @Override
@@ -53,6 +53,7 @@ public class ImageProcessingFragment extends Fragment {
         acceptChangesButton = root.findViewById(R.id.acceptChangesButton);
         saveImageButton = root.findViewById(R.id.saveImageButton);
         denyChangesButton = root.findViewById(R.id.denyChangesButton);
+        rotateImageButton = root.findViewById(R.id.rotateImageButton);
         imageSettingsBottomNavigationView = root.findViewById(R.id.imageSettingsBottomNavigationView);
         NavHostFragment navHostFragment = (NavHostFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_activity_main);
         navController = navHostFragment.getNavController();
@@ -68,7 +69,6 @@ public class ImageProcessingFragment extends Fragment {
                         imageSettingsBarView.setProgress(0);
                         imageSettingsBarLayout.setVisibility(View.VISIBLE);
                         imageSettingsType = ImageSettingsTypes.BRIGHTNESS;
-                        setEnableBottomMenu(false);
                         break;
 
                     case R.id.image_processing_contrast:
@@ -78,7 +78,6 @@ public class ImageProcessingFragment extends Fragment {
                         imageSettingsBarView.setProgress(10);
                         imageSettingsBarLayout.setVisibility(View.VISIBLE);
                         imageSettingsType = ImageSettingsTypes.CONTRAST;
-                        setEnableBottomMenu(false);
                         break;
 
                     case R.id.image_processing_saturation:
@@ -88,7 +87,6 @@ public class ImageProcessingFragment extends Fragment {
                         imageSettingsBarView.setProgress(0);
                         imageSettingsBarLayout.setVisibility(View.VISIBLE);
                         imageSettingsType = ImageSettingsTypes.SATURATION;
-                        setEnableBottomMenu(false);
                         break;
 
                     case R.id.image_processing_hue:
@@ -98,7 +96,6 @@ public class ImageProcessingFragment extends Fragment {
                         imageSettingsBarView.setProgress(0);
                         imageSettingsBarLayout.setVisibility(View.VISIBLE);
                         imageSettingsType = ImageSettingsTypes.HUE;
-                        setEnableBottomMenu(false);
                         break;
                 }
                 return true;
@@ -130,10 +127,12 @@ public class ImageProcessingFragment extends Fragment {
                 acceptChangesButton.setVisibility(View.VISIBLE);
                 denyChangesButton.setVisibility(View.VISIBLE);
                 saveImageButton.setVisibility(View.GONE);
+                setEnableBottomMenu(false);
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+
             }
         });
         tempImageLiveData.observe(getViewLifecycleOwner(), new Observer<Bitmap>() {
@@ -170,6 +169,12 @@ public class ImageProcessingFragment extends Fragment {
                 viewModel.saveChanges(getContext());
                 navController.popBackStack(R.id.image_camera_fragment,false);
                 navController.popBackStack();
+            }
+        });
+        rotateImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                viewModel.rotateRight();
             }
         });
         return root;

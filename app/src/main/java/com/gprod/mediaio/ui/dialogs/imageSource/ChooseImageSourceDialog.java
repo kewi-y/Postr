@@ -28,14 +28,14 @@ public class ChooseImageSourceDialog {
             @Override
             public void onClick(View view) {
                 chooseImageSourceDialogCallback.onChooseGallery();
-                instance.dialog.hide();
+                instance.dialog.dismiss();
             }
         });
         instance.dialogSourceCameraItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 chooseImageSourceDialogCallback.onChooseCamera();
-                instance.dialog.hide();
+                instance.dialog.dismiss();
             }
         });
         instance.dialog.show();

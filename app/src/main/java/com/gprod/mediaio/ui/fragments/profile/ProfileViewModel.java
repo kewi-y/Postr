@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.firestore.core.ActivityScope;
 import com.google.zxing.WriterException;
+import com.gprod.mediaio.R;
 import com.gprod.mediaio.enums.profile.ProfileTypes;
 import com.gprod.mediaio.interfaces.repositories.user.SubscribeCallback;
 import com.gprod.mediaio.interfaces.repositories.user.UnsubscribeCallback;
@@ -183,5 +184,16 @@ public class ProfileViewModel extends ViewModel {
                 loadProfile(context);
             }
         }
+     }
+     public void generateQrProfile(Context context){
+        String id = userRepository.getUser().getId();
+        String sharingTag = context.getResources().getString(R.string.qr_profile_sharing_tag);
+        id = sharingTag + id;
+         try {
+             qrCodeRepository.generateFromString(id);
+             qrCodeRepository.saveTempQr(context);
+         } catch (WriterException e) {
+             throw new RuntimeException(e);
+         }
      }
 }

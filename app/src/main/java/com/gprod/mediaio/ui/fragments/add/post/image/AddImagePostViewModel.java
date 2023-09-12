@@ -4,6 +4,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -21,6 +22,8 @@ import com.gprod.mediaio.repositories.PostRepository;
 import com.gprod.mediaio.repositories.TempPhotoRepository;
 import com.gprod.mediaio.repositories.UserRepository;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -83,7 +86,10 @@ public class AddImagePostViewModel extends ViewModel {
         });
     }
     private void attachImage(Bitmap image){
-        tempPhotoRepository.attachImage(image);
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.JPEG,100,byteArrayOutputStream);
+        Bitmap compressedImage = BitmapFactory.decodeStream(new ByteArrayInputStream(byteArrayOutputStream.toByteArray()));
+        tempPhotoRepository.attachImage(compressedImage);
         attachedImageListLiveData.setValue(tempPhotoRepository.getAttachedImageList());
     }
     public void updateData(){

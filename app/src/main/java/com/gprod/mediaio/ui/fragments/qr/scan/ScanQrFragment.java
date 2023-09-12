@@ -1,8 +1,12 @@
 package com.gprod.mediaio.ui.fragments.qr.scan;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.camera.view.PreviewView;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.Manifest;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -19,6 +23,9 @@ import com.gprod.mediaio.R;
 import com.gprod.mediaio.interfaces.repositories.selectedUser.SelectUserCallback;
 import com.gprod.mediaio.interfaces.services.camera.QrScanningCallback;
 import com.gprod.mediaio.services.camera.CameraService;
+import com.gprod.mediaio.services.popup.notification.NotificationPopup;
+
+import java.util.Map;
 
 public class ScanQrFragment extends Fragment {
 
@@ -26,6 +33,9 @@ public class ScanQrFragment extends Fragment {
     private PreviewView previewView;
     private CameraService cameraService;
     private NavController navController;
+    private final String[] PERMISSIONS = {
+            Manifest.permission.CAMERA,
+    };
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -42,6 +52,7 @@ public class ScanQrFragment extends Fragment {
                 viewModel.selectUser(content, new SelectUserCallback() {
                     @Override
                     public void onSelected() {
+                        NotificationPopup.show(getContext(),false,getResources().getString(R.string.title_done));
                         navController.popBackStack();
                         navController.navigate(R.id.navigation_profile);
                     }
@@ -58,7 +69,29 @@ public class ScanQrFragment extends Fragment {
                 //TODO: notify
             }
         };
-        cameraService.startCameraWithQrAnalyzer(getContext(),previewView,getViewLifecycleOwner(),qrScanningCallback);
+        ActivityResultContracts.RequestMultiplePermissions requestMultiplePermissionsContract = new ActivityResultContracts.RequestMultiplePermissions();
+        ActivityResultLauncher<String[]> permissionsRequestLauncher = registerForActivityResult(requestMultiplePermissionsContract,
+                new ActivityResultCallback<Map<String, Boolean>>() {
+                    @Override
+                    public void onActivityResult(Map<String, Boolean> result) {
+                        if(result.get(PERMISSIONS[0])!= null && result.get(PERMISSIONS[1]) != null){
+                            if(result.get(PERMISSIONS[0]) && result.get(PERMISSIONS[1])){
+                                cameraService.startCameraWithQrAnalyzer(getContext(),previewView,
+                                        getViewLifecycleOwner(),qrScanningCallback);
+                            }
+                            else {
+                                NotificationPopup.show(getContext(),true,getResources().getString(R.string.error_permissions_not_granted_title));
+                            }
+                        }
+                    }
+                });
+        if(viewModel.checkPermissions(getContext())) {
+            cameraService.startCameraWithQrAnalyzer(getContext(), previewView, getViewLifecycleOwner(), qrScanningCallback);
+        }
+        else {
+            permissionsRequestLauncher.launch(PERMISSIONS);
+        }
         return root;
     }
+
 }

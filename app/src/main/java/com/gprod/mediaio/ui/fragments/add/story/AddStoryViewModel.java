@@ -46,7 +46,6 @@ public class AddStoryViewModel extends ViewModel {
             return true;
         }
         else {
-            NotificationPopup.show(context,true,context.getResources().getString(R.string.error_permissions_not_granted_title));
             return false;
         }
     }

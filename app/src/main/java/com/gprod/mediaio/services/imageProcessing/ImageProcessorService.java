@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
@@ -85,6 +86,13 @@ public class ImageProcessorService {
         outputBitmapCanvas = new Canvas(outputImage);
         paintFilter.setColorFilter(new ColorMatrixColorFilter(hueColorMatrix));
         outputBitmapCanvas.drawBitmap(outputImage,0,0,paintFilter);
+        return outputImage;
+    }
+    public Bitmap rotate(Bitmap image, float value){
+        Bitmap originalImage = image.copy(Bitmap.Config.ARGB_8888,true);
+        Matrix matrix = new Matrix();
+        matrix.preRotate(value);
+        outputImage = Bitmap.createBitmap(originalImage,0,0,image.getWidth(),image.getHeight(),matrix,true);
         return outputImage;
     }
 }

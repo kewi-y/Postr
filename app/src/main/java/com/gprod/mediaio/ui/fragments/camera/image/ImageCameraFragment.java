@@ -1,8 +1,12 @@
 package com.gprod.mediaio.ui.fragments.camera.image;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.camera.view.PreviewView;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.Manifest;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 
@@ -22,6 +26,8 @@ import com.gprod.mediaio.R;
 import com.gprod.mediaio.interfaces.services.camera.TakingPhotoCallback;
 import com.gprod.mediaio.services.popup.notification.NotificationPopup;
 
+import java.util.Map;
+
 public class ImageCameraFragment extends Fragment {
 
     private ImageCameraViewModel viewModel;
@@ -29,6 +35,12 @@ public class ImageCameraFragment extends Fragment {
     private PreviewView previewView;
     private ImageView flipCameraView;
     private NavController navController;
+    private final String[] PERMISSIONS = {
+            Manifest.permission.CAMERA,
+            Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE
+    };
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
@@ -39,26 +51,29 @@ public class ImageCameraFragment extends Fragment {
         takePhotoButton = root.findViewById(R.id.takePhotoButton);
         previewView = root.findViewById(R.id.imageCameraPreviewView);
         flipCameraView = root.findViewById(R.id.flipCameraImageView);
-        if(viewModel.requestPermissions(getContext())) {
-            viewModel.initCamera(getContext(), getViewLifecycleOwner(), previewView);
-            takePhotoButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    viewModel.takePhoto(getContext(), new TakingPhotoCallback() {
-                        @Override
-                        public void onTaken(Bitmap image) {
-                            navController.navigate(R.id.action_image_camera_fragment_to_imageProcessingFragment);
-                        }
-                        @Override
-                        public void onFailure() {
-                            NotificationPopup.show(getContext(), true, getResources().getString(R.string.error_taking_photo_title));
-                        }
-                    });
+        ActivityResultContracts.RequestMultiplePermissions requestMultiplePermissionsContract = new ActivityResultContracts.RequestMultiplePermissions();
+        ActivityResultLauncher<String[]> requestPermissionsLauncher = registerForActivityResult(requestMultiplePermissionsContract,
+                new ActivityResultCallback<Map<String, Boolean>>() {
+            @Override
+            public void onActivityResult(Map<String, Boolean> result) {
+                if(result.get(PERMISSIONS[0]) != null && result.get(PERMISSIONS[1]) != null
+                && result.get(PERMISSIONS[2]) != null && result.get(PERMISSIONS[3]) != null){
+                    if(result.get(PERMISSIONS[0]) && result.get(PERMISSIONS[1])
+                    && result.get(PERMISSIONS[2]) && result.get(PERMISSIONS[3])){
+                        startCamera();
+                    }
+                    else {
+                        NotificationPopup.show(getContext(),true,getResources().getString(R.string.error_permissions_not_granted_title));
+                        navController.popBackStack();
+                    }
                 }
-            });
+            }
+        });
+        if(viewModel.checkPermissions(getContext())) {
+            startCamera();
         }
         else {
-            navController.navigate(R.id.navigation_home);
+            requestPermissionsLauncher.launch(PERMISSIONS);
         }
         flipCameraView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,5 +82,23 @@ public class ImageCameraFragment extends Fragment {
             }
         });
         return root;
+    }
+    private void startCamera(){
+        viewModel.initCamera(getContext(),getViewLifecycleOwner(),previewView);
+        takePhotoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                viewModel.takePhoto(getContext(), new TakingPhotoCallback() {
+                    @Override
+                    public void onTaken(Bitmap image) {
+                        navController.navigate(R.id.action_image_camera_fragment_to_imageProcessingFragment);
+                    }
+                    @Override
+                    public void onFailure() {
+                        NotificationPopup.show(getContext(), true, getResources().getString(R.string.error_taking_photo_title));
+                    }
+                });
+            }
+        });
     }
 }

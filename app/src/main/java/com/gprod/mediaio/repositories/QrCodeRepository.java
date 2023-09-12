@@ -58,4 +58,20 @@ public class QrCodeRepository {
         }
         return qrCodeBitmap;
     }
+    public void saveTempQr(Context context){
+        tempQrFile = internalStorageManager.saveBitmap(context,qrCodeBitmap,context.getResources().getString(R.string.temp_qr_name));
+    }
+    public Bitmap getTempQr(){
+        if(tempQrFile.exists()) {
+            Bitmap bitmap = BitmapFactory.decodeFile(tempQrFile.getPath());
+            return bitmap;
+        }
+        else {
+            return null;
+        }
+    }
+    public void deleteTempQr(){
+        internalStorageManager.deleteFile(tempQrFile);
+        qrCodeBitmap.eraseColor(backgroundColor);
+    }
 }
