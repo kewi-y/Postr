@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">mediaIO</string>
+    <string name="app_name">Postr</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="default_profile_picture_id">default_user_picture.jpg</string>
     <string name="title_home">Главная</string>

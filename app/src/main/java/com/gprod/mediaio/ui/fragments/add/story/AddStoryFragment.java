@@ -8,9 +8,7 @@ import androidx.camera.view.PreviewView;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.Manifest;
-import android.graphics.drawable.Animatable2;
 import android.graphics.drawable.AnimatedVectorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -31,7 +29,6 @@ import com.gprod.mediaio.R;
 import com.gprod.mediaio.enums.camera.CameraType;
 import com.gprod.mediaio.interfaces.fragments.add.story.CapturingImageStoryCallback;
 import com.gprod.mediaio.interfaces.fragments.add.story.RecordingVideoStoryCallback;
-import com.gprod.mediaio.services.popup.loading.LoadingPopup;
 import com.gprod.mediaio.services.popup.notification.NotificationPopup;
 import com.gprod.mediaio.services.popup.progress.ProgressPopup;
 
